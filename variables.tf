@@ -51,11 +51,11 @@ variable "deletion_protection" {
 variable "frontend_container" {
   type        = string
   description = "The public Artifact Registry URI for the frontend container"
-  default     = "us-docker.pkg.dev/google-samples/containers/jss/rag-frontend-service:v0.0.1"
+  default     = "us-central1-docker.pkg.dev/hackathon-cp-project-team-1/rag-genai/frontend-service:latest"
 }
 
 variable "retrieval_container" {
   type        = string
   description = "The public Artifact Registry URI for the retrieval container"
-  default     = "us-docker.pkg.dev/google-samples/containers/jss/rag-retrieval-service:v0.0.2"
+  default     = "us-central1-docker.pkg.dev/hackathon-cp-project-team-1/rag-genai/retrieval-service:latest"
 }
