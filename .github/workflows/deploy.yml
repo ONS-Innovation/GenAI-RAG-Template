@@ -1,0 +1,33 @@
+name: Run Terraform Apply
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform_apply:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Setup Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@master
+      with:
+        version: 'latest'
+        service_account_key: ${{ secrets.GCP_SA_KEY }}  # Set your GCP service account key secret
+
+    - name: Set project ID
+      run: gcloud config set project $PROJECT_ID
+
+    - name: Initialize Terraform
+      run: terraform init
+
+    - name: Apply Terraform configuration
+      run: |
+        terraform apply \
+          -var="project_id=hackathon-cp-project-team-1" \
+          -var="region=us-central1" \
+          -auto-approve
