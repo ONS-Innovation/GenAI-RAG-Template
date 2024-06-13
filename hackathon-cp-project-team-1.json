@@ -1,7 +1,7 @@
 {
   "type": "service_account",
   "project_id": "hackathon-cp-project-team-1",
-  "private_key_id": "${{values.privateKey | dump }}",
+  "private_key_id": "${{values.privateKeyID | dump }}",
   "private_key": "${{ values.privateKey | dump} }}",
   "client_email": "hackathon-cp-project-team-1@appspot.gserviceaccount.com",
   "client_id": "${{ values.clientID | dump} }}",
