@@ -1,10 +1,10 @@
 {
   "type": "service_account",
   "project_id": "hackathon-cp-project-team-1",
-  "private_key_id": "${{values.PrivateKeyID | dump}}",
-  "private_key": "${{values.PrivateKey | dump}}",
+  "private_key_id": "${{values.privateKeyID | dump}}",
+  "private_key": "${{values.privateKey | dump}}",
   "client_email": "hackathon-cp-project-team-1@appspot.gserviceaccount.com",
-  "client_id": "${{values.ClientID | dump}}",
+  "client_id": "${{values.clientID | dump}}",
   "auth_uri": "https://accounts.google.com/o/oauth2/auth",
   "token_uri": "https://oauth2.googleapis.com/token",
   "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
