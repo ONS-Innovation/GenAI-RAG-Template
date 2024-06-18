@@ -1,29 +1,69 @@
-name: Run Terraform Apply
+name: Deploy Infrastructure
 
 on:
   push:
     branches:
-      - main
+      - main  
 
 jobs:
-  terraform_apply:
+  deploy:
     runs-on: ubuntu-latest
+    environment: CI    
+    env:
+      PROJECT_ID: hackathon-cp-project-team-1
+      REGION: us-central1
+      PRIVATE_KEY: ${{ secrets.PRIVATEKEY }}
+      PRIVATE_KEY_ID: ${{ secrets.PRIVATEKEYID }}
+      CLIENT_ID: ${{ secrets.CLIENTID }}
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Setup Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@master
-      with:
-        version: 'latest'
-        service_account_key: ${{ secrets.GCP_SA_KEY }}  # Set your GCP service account key secret
+      - name: Print environment variables for debugging
+        run: |
+          echo "PROJECT_ID: $PROJECT_ID"
+          echo "REGION: $REGION"
+          echo "PRIVATE_KEY_ID: $PRIVATE_KEY_ID"
+          echo "CLIENT_EMAIL: $CLIENT_EMAIL"
+          echo "CLIENT_ID: $CLIENT_ID"
+          echo "CLIENT_CERT_URL: $CLIENT_CERT_URL"
+          # Do not print PRIVATE_KEY as it is sensitive
 
-    - name: Set project ID
-      run: gcloud config set project $PROJECT_ID
+      - name: Install jq
+        run: sudo apt-get install -y jq
 
-    - name: Initialize Terraform
-      run: terraform init
+      - name: Create service account key file
+        run: |
+          echo '{}' | jq --arg type "service_account" \
+                         --arg project_id "hackathon-cp-project-team-1" \
+                         --arg private_key_id "${{ secrets.PRIVATEKEYID }}" \
+                         --arg private_key "${{ secrets.PRIVATEKEY }}" \
+                         --arg client_email "hackathon-cp-project-team-1@appspot.gserviceaccount.com" \
+                         --arg client_id "${{ secrets.CLIENTID }}" \
+                         --arg auth_uri "https://accounts.google.com/o/oauth2/auth" \
+                         --arg token_uri "https://oauth2.googleapis.com/token" \
+                         --arg auth_provider_x509_cert_url "https://www.googleapis.com/oauth2/v1/certs" \
+                         --arg client_x509_cert_url "https://www.googleapis.com/robot/v1/metadata/x509/hackathon-cp-project-team-1%40appspot.gserviceaccount.com" \
+                         --arg universe_domain "googleapis.com" \
+                         '.type=$type | .project_id=$project_id | .private_key_id=$private_key_id | .private_key=$private_key | .client_email=$client_email | .client_id=$client_id | .auth_uri=$auth_uri | .token_uri=$token_uri | .auth_provider_x509_cert_url=$auth_provider_x509_cert_url | .client_x509_cert_url=$client_x509_cert_url | .universe_domain=$universe_domain' > $HOME/gcp-key.json
 
-    - name: Apply Terraform configuration
-      run: bash /deploy/deploy.sh
+      - name: Display service account key file (for debugging, remove this in production)
+        run: cat $HOME/gcp-key.json
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          version: 'latest'
+
+      - name: Authenticate to GCP
+        run: gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
+
+      - name: Set GCP project
+        run: gcloud config set project hackathon-cp-project-team-1
+
+      - name: Initialize Terraform
+        run: terraform init
+
+      - name: Apply Terraform configuration
+        run: terraform apply -var="project_id=hackathon-cp-project-team-1" -var="region=us-central1" -auto-approve
