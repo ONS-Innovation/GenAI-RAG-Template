@@ -14,11 +14,50 @@
  * limitations under the License.
  */
 
+locals {
+  project_id   = "hackathon-cp-project-team-1"
+  organization = "backstage-dummy-org"
+  repo         = "RAG-Demo-SDP" 
+}
+
+resource "google_iam_workload_identity_pool" "github_pool" {
+  project                   = local.project_id
+  workload_identity_pool_id = "gemini-rag"
+  display_name              = "demo-test"
+  description               = "Identity pool for GitHub deployments"
+}
+
+resource "google_iam_workload_identity_pool_provider" "github" {
+  project                            = local.project_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
+  workload_identity_pool_provider_id = "gemini-rag-provider"
+
+  attribute_mapping = {
+    "google.subject"       = "assertion.sub"
+    "attribute.actor"      = "assertion.actor"
+    "attribute.aud"        = "assertion.aud"
+    "attribute.repository" = "assertion.repository"
+  }
+
+  attribute_condition = "assertion.repository_owner==\"${local.organization}\""
+
+  oidc {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
+}
+
+
 # Creates the Service Account to be used by Cloud Run
-resource "google_service_account" "runsa" {
-  project      = module.project-services.project_id
-  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
+resource "google_service_account" "github_actions" {
+  project      = local.project_id
+  account_id   = "github-actions"
   display_name = "Service Account for Cloud Run"
+
+resource "google_service_account_iam_member" "workload_identity_user" {
+  service_account_id = google_service_account.github_actions.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
+}
 
 }
 
