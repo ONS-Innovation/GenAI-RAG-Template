@@ -20,33 +20,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Print environment variables for debugging
-        run: |
-          echo "PROJECT_ID: $PROJECT_ID"
-          echo "REGION: $REGION"
-          echo "PRIVATE_KEY_ID: $PRIVATE_KEY_ID"
-          echo "CLIENT_EMAIL: $CLIENT_EMAIL"
-          echo "CLIENT_ID: $CLIENT_ID"
-          echo "CLIENT_CERT_URL: $CLIENT_CERT_URL"
-          # Do not print PRIVATE_KEY as it is sensitive
+      - id: 'auth'
+        name: 'Authenticate to Google Cloud'
+        uses: 'google-github-actions/auth@v0.4.0'
+        with:
+          workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/subject/SUBJECT_ATTRIBUTE_VALUE'
+          service_account: 'hackathon-cp-project-team-1@appspot.gserviceaccount.com'
 
       - name: Install jq
         run: sudo apt-get install -y jq
-
-      - name: Create service account key file
-        run: |
-          echo '{}' | jq --arg type "service_account" \
-                         --arg project_id "hackathon-cp-project-team-1" \
-                         --arg private_key_id "${{ secrets.PRIVATEKEYID }}" \
-                         --arg private_key "${{ secrets.PRIVATEKEY }}" \
-                         --arg client_email "hackathon-cp-project-team-1@appspot.gserviceaccount.com" \
-                         --arg client_id "${{ secrets.CLIENTID }}" \
-                         --arg auth_uri "https://accounts.google.com/o/oauth2/auth" \
-                         --arg token_uri "https://oauth2.googleapis.com/token" \
-                         --arg auth_provider_x509_cert_url "https://www.googleapis.com/oauth2/v1/certs" \
-                         --arg client_x509_cert_url "https://www.googleapis.com/robot/v1/metadata/x509/hackathon-cp-project-team-1%40appspot.gserviceaccount.com" \
-                         --arg universe_domain "googleapis.com" \
-                         '.type=$type | .project_id=$project_id | .private_key_id=$private_key_id | .private_key=$private_key | .client_email=$client_email | .client_id=$client_id | .auth_uri=$auth_uri | .token_uri=$token_uri | .auth_provider_x509_cert_url=$auth_provider_x509_cert_url | .client_x509_cert_url=$client_x509_cert_url | .universe_domain=$universe_domain' > $HOME/gcp-key.json
 
       - name: Display service account key file (for debugging, remove this in production)
         run: cat $HOME/gcp-key.json
@@ -55,9 +37,6 @@ jobs:
         uses: google-github-actions/setup-gcloud@v1
         with:
           version: 'latest'
-
-      - name: Authenticate to GCP
-        run: gcloud auth activate-service-account --key-file=$HOME/gcp-key.json
 
       - name: Set GCP project
         run: gcloud config set project hackathon-cp-project-team-1
