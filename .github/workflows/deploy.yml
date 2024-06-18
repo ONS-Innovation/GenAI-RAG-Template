@@ -7,15 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-    environment: CI    
-    env:
-      PROJECT_ID: hackathon-cp-project-team-1
-      REGION: us-central1
-      PRIVATE_KEY: ${{ secrets.PRIVATEKEY }}
-      PRIVATE_KEY_ID: ${{ secrets.PRIVATEKEYID }}
-      CLIENT_ID: ${{ secrets.CLIENTID }}
-
+    runs-on: ubuntu-latest    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -24,14 +16,13 @@ jobs:
         name: 'Authenticate to Google Cloud'
         uses: 'google-github-actions/auth@v0.4.0'
         with:
-          workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/subject/SUBJECT_ATTRIBUTE_VALUE'
+        
+
+          workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider'
           service_account: 'hackathon-cp-project-team-1@appspot.gserviceaccount.com'
 
       - name: Install jq
         run: sudo apt-get install -y jq
-
-      - name: Display service account key file (for debugging, remove this in production)
-        run: cat $HOME/gcp-key.json
 
       - name: Set up Google Cloud SDK
         uses: google-github-actions/setup-gcloud@v1
