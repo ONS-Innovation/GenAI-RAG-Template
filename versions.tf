@@ -47,15 +47,3 @@ terraform {
     module_name = "blueprints/terraform/terraform-genai-rag/v0.1.2"
   }
 }
-
-provider "google" {
-  project     = "your-project-id"
-  region      = "your-region"
-  credentials = file("./hackathon-cp-project-team-1-81c809d05cd6.json")
-}
-
-provider "google-beta" {
-  project     = "your-project-id"
-  region      = "your-region"
-  credentials = file("./hackathon-cp-project-team-1-81c809d05cd6.json")
-}
