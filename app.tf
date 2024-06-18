@@ -56,7 +56,7 @@ resource "google_service_account" "github_actions" {
 resource "google_service_account_iam_member" "workload_identity_user" {
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.organization}/${local.repo}"
 }
 
 }
