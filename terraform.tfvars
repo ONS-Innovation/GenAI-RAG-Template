@@ -3,7 +3,7 @@
 # The values in this file override any defaults in variables.tf.
 
 # ID of the project in which you want to deploy the solution
-project_id = "genai-rag-run-sa-0192aec6"
+
 
 # The following variables have default values. You can set your own values or remove them to accept the defaults.
 
