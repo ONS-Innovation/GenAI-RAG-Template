@@ -43,6 +43,11 @@ resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
   workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = var.provider_id  // Replace with the actual ID
   display_name                       = "My OIDC Provider"
+
+  oidc {
+    client_id  = "101575480515130141293" 
+    issuer_uri = "https://your-issuer-uri.com" 
+  }
 }
 
 resource "google_iam_workload_identity_pool_provider" "main" {
