@@ -42,7 +42,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
   workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
   display_name              = "github-provider"
   attribute_mapping {
-    attribute = var.attribute_mapping
+    attribute = "google-subject"
     value     = "github-subject"
   }
 }
