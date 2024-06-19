@@ -30,7 +30,12 @@ provider "google" {
   region  = "var.region"
 }
 
+
+
 resource "google_iam_workload_identity_pool" "my_pool" {
+  project  = "1054015443281"
+  location = "global"
+  name     = "gemini-rag"
   provider = projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag
 }
 
