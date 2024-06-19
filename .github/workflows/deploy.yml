@@ -24,12 +24,6 @@ jobs:
           token_format: 'access_token'
           workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider'
           service_account: 'genai-rag-run-sa-0192aec6@hackathon-cp-project-team-1.iam.gserviceaccount.com'
-      
-      - name: 'Access secret'
-        run: |-
-          curl https://secretmanager.googleapis.com/v1/projects/1054015443281/secrets/genai-cloud-sql-password-0192aec6  \
-            --header "Authorization: Bearer ${{ steps.auth.outputs.access_token }}"
-
 
       - name: Install jq
         run: sudo apt-get install -y jq
