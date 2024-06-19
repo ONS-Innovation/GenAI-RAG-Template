@@ -37,6 +37,7 @@ resource "google_iam_workload_identity_pool" "my_pool" {
   project  = "1054015443281"
   location = "global"
   name     = "gemini-rag"
+  workload_identity_pool_id = projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag
 }
 
 resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
