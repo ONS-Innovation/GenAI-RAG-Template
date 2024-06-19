@@ -26,7 +26,6 @@ jobs:
           access_token_lifetime: '3600s'
           access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform'
           id_token_include_email: false
-          project_id: 'hackathon-cp-project-team-1'
 
 
       - name: Install jq
