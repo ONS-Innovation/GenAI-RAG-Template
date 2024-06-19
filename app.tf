@@ -25,6 +25,7 @@ resource "google_iam_workload_identity_pool" "main" {
 }
 
 provider "google" {
+  credentials = file("./pool_id_cred_config.json")
   project = "var.project_id"
   region  = "var.region"
 }
