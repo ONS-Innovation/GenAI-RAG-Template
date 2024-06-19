@@ -32,7 +32,7 @@ provider "google" {
 
 
 
-resource "google_iam_workload_identity_pool" "my_pool" {
+resource "google_iam_workload_identity_pool" "gemini-rag" {
   provider                  = google-beta
   project                   = "1054015443281"
   workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
@@ -51,7 +51,7 @@ resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
   }
 }
 
-resource "google_iam_workload_identity_pool_provider" "main" {
+resource "google_iam_workload_identity_pool_provider" "gemini-rag" {
   provider                           = google
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.main.workload_identity_pool_id
