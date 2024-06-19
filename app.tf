@@ -29,7 +29,7 @@ provider "google" {
   region  = "var.region"
   workload_identity_pool_provider = "//iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider"
 }
-}
+
 
 resource "google_iam_workload_identity_pool_provider" "main" {
   provider                           = google
