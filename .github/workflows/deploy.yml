@@ -44,4 +44,4 @@ jobs:
         run: terraform init
 
       - name: Apply Terraform configuration
-        run: terraform apply -var="project_id=hackathon-cp-project-team-1" -var="region=us-central1" -auto-approve
+        run: terraform apply -auto-approve
