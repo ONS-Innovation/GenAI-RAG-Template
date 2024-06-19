@@ -49,8 +49,8 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 
 # Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "github_actions" {
-  project      = local.project_id
-  account_id   = "github-actions"
+  project      = module.project-services.project_id
+  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
   display_name = "Service Account for Cloud Run"
 }
 
