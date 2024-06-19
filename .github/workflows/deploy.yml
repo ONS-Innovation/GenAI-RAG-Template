@@ -22,10 +22,7 @@ jobs:
         with:
           workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider'
           service_account: 'hackathon-cp-project-team-1@appspot.gserviceaccount.com'
-          create_credentials_file: true
-          access_token_lifetime: '3600s'
-          access_token_scopes: 'https://www.googleapis.com/auth/cloud-platform'
-          id_token_include_email: false
+   
 
 
       - name: Install jq
