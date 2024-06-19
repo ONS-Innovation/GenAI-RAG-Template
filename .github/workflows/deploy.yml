@@ -21,7 +21,8 @@ jobs:
         uses: 'google-github-actions/auth@v0.4.0'
         with:
           workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider'
-          service_account: 'genai-rag-run-sa-0192aec6@hackathon-cp-project-team-1.iam.gserviceaccount.com'
+          service_account: 'hackathon-cp-project-team-1@appspot.gserviceaccount.com'
+          project_id: 'hackathon-cp-project-team-1'
           
       - name: Install jq
         run: sudo apt-get install -y jq
