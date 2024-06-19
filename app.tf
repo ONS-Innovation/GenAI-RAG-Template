@@ -24,6 +24,28 @@ resource "google_iam_workload_identity_pool" "main" {
   disabled                  = false
 }
 
+provider "google" {
+  project = "var.project_id"
+  region  = "var.region"
+}
+
+resource "google_iam_workload_identity_pool" "github_pool" {
+  provider = google
+
+  display_name = "github-pool"
+}
+
+resource "google_iam_workload_identity_pool_provider" "github_provider" {
+  provider = google
+
+  workload_identity_pool_id = google_iam_workload_identity_pool.github_pool.id
+  display_name              = "github-provider"
+  attribute_mapping {
+    attribute = "google-subject"
+    value     = "github-subject"
+  }
+}
+
 resource "google_iam_workload_identity_pool_provider" "main" {
   provider                           = google-beta
   project                            = var.project_id
