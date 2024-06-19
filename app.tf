@@ -46,7 +46,7 @@ resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
 
   oidc {
     client_id  = "101575480515130141293" 
-    issuer_uri = "https://your-issuer-uri.com" 
+    issuer_uri = "https://token.actions.githubusercontent.com" 
   }
 }
 
