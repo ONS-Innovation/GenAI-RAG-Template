@@ -47,11 +47,10 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 }
 
 
-# Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "github_actions" {
-  project      = module.project-services.project_id
-  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
-  display_name = "Service Account for Cloud Run"
+  project      = local.project_id
+  account_id   = "github-actions"
+  display_name = "Service Account used for GitHub Actions"
 }
 
 resource "google_service_account" "runsa" {
@@ -60,11 +59,23 @@ resource "google_service_account" "runsa" {
   display_name = "Service Account for Cloud Run"
 }
 
+resource "google_project_service" "wif_api" {
+  for_each = toset([
+    "iam.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "iamcredentials.googleapis.com",
+    "sts.googleapis.com",
+  ])
+
+  service            = each.value
+  disable_on_destroy = false
+}
+
 
 resource "google_service_account_iam_member" "workload_identity_user" {
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/${local.organization}/${local.repo}"
+  member             = "principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
 }
 
 # # Applies permissions to the Cloud Run SA
