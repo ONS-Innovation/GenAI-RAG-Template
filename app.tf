@@ -33,7 +33,7 @@ resource "google_iam_workload_identity_pool" "github_pool" {
   provider = google
 
   display_name = "github-pool"
-  workload_identity_pool_id = "var.pool_id"
+  workload_identity_pool_id = "google_iam_workload_identity_pool.main.workload_identity_pool_id"
 }
 
 resource "google_iam_workload_identity_pool_provider" "github_provider" {
