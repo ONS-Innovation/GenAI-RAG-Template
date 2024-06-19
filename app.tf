@@ -15,7 +15,7 @@
  */
 
 
-resource "google_iam_workload_identity_pool" "main" {
+resource "google_iam_workload_identity_pool" "gemini-rag" {
   provider                  = google
   project                   = var.project_id
   workload_identity_pool_id = var.pool_id
