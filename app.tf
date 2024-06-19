@@ -29,24 +29,6 @@ provider "google" {
   region  = "var.region"
 }
 
-resource "google_iam_workload_identity_pool" "github_pool" {
-  provider = google
-
-  display_name = var.provider_display_name
-  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
-}
-
-resource "google_iam_workload_identity_pool_provider" "github_provider" {
-  provider = google
-
-  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
-  display_name              = "github-provider"
-  attribute_mapping {
-    attribute = "google-subject"
-    value     = "github-subject"
-  }
-}
-
 resource "google_iam_workload_identity_pool_provider" "main" {
   provider                           = google
   project                            = var.project_id
