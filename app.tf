@@ -27,7 +27,18 @@ resource "google_iam_workload_identity_pool" "main" {
 provider "google" {
   project = "var.project_id"
   region  = "var.region"
-  workload_identity_pool_provider = "//iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/providers/gemini-rag-provider"
+}
+
+resource "google_iam_workload_identity_pool" "my_pool" {
+  provider = "projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag"
+}
+
+resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
+  workload_identity_pool = google_iam_workload_identity_pool.my_pool.name
+  display_name           = "My OIDC Provider"
+  oidc_provider {
+    issuer_uri = "https://token.actions.githubusercontent.com"
+  }
 }
 
 
