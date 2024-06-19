@@ -33,10 +33,10 @@ provider "google" {
 
 
 resource "google_iam_workload_identity_pool" "my_pool" {
+  provider = google-beta
   project  = "1054015443281"
   location = "global"
   name     = "gemini-rag"
-  provider = projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag
 }
 
 resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
