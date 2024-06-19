@@ -18,7 +18,7 @@
 resource "google_iam_workload_identity_pool" "gemini-rag" {
   provider                  = google-beta
   project                   = var.project_id
-  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
+  workload_identity_pool_id = google_iam_workload_identity_pool.gemini-rag.workload_identity_pool_id
   display_name              = var.pool_display_name
   description               = var.pool_description
   disabled                  = false
@@ -30,9 +30,9 @@ provider "google" {
   region  = "var.region"
 }
 
-resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
+resource "google_iam_workload_identity_pool_provider" "gemini-rag-provider" {
   provider                           = google-beta
-  workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini-rag.workload_identity_pool_id
   location       = var.region
   workload_identity_pool_provider_id = var.provider_id  // Replace with the actual ID
   display_name                       = "My OIDC Provider"
@@ -46,7 +46,7 @@ resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
 resource "google_iam_workload_identity_pool_provider" "gemini-rag" {
   provider                           = google
   project                            = var.project_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.main.workload_identity_pool_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini-rag.workload_identity_pool_id
   workload_identity_pool_provider_id = var.provider_id
   display_name                       = var.provider_display_name
   description                        = var.provider_description
@@ -62,7 +62,7 @@ resource "google_service_account_iam_member" "wif-sa" {
   for_each           = var.sa_mapping
   service_account_id = each.value.sa_name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.main.name}/${each.value.attribute}"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.gemini-rag.name}/${each.value.attribute}"
 }
 
 # Creates the Service Account to be used by Cloud Run
