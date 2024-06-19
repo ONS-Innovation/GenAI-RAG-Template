@@ -37,13 +37,14 @@ resource "google_iam_workload_identity_pool" "my_pool" {
   project  = "1054015443281"
   location = "global"
   name     = "gemini-rag"
-  workload_identity_pool_id = projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag
 }
 
 resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
+  provider = google-beta
   workload_identity_pool = google_iam_workload_identity_pool.my_pool.name
   display_name           = "My OIDC Provider"
   oidc_provider {
+    client_id = gemini-rag-provider
     issuer_uri = "https://token.actions.githubusercontent.com"
   }
 }
