@@ -16,9 +16,9 @@
 
 
 resource "google_iam_workload_identity_pool" "gemini-rag" {
-  provider                  = google
+  provider                  = google-beta
   project                   = var.project_id
-  workload_identity_pool_id = var.pool_id
+  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
   display_name              = var.pool_display_name
   description               = var.pool_description
   disabled                  = false
@@ -28,14 +28,6 @@ provider "google" {
   credentials = file("./pool_id_cred_config.json")
   project = "var.project_id"
   region  = "var.region"
-}
-
-
-
-resource "google_iam_workload_identity_pool" "gemini-rag" {
-  provider                  = google-beta
-  project                   = "1054015443281"
-  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
 }
 
 resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
