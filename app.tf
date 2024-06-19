@@ -41,6 +41,7 @@ resource "google_iam_workload_identity_pool" "my_pool" {
 resource "google_iam_workload_identity_pool_provider" "my_oidc_provider" {
   provider                           = google-beta
   workload_identity_pool_id          = google_iam_workload_identity_pool.my_pool.workload_identity_pool_id
+  location       = var.region
   workload_identity_pool_provider_id = var.provider_id  // Replace with the actual ID
   display_name                       = "My OIDC Provider"
 
