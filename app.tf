@@ -14,52 +14,15 @@
  * limitations under the License.
  */
 
-resource "google_iam_workload_identity_pool" "github_pool" {
-  project                   = module.project-services.project_id
-  workload_identity_pool_id = "github-pool"
-  display_name              = "GitHub pool"
-  description               = "Identity pool for GitHub deployments"
-}
-
-resource "google_iam_workload_identity_pool_provider" "github" {
-  project                            = module.project-services.workload_identity_pool_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.id
-  workload_identity_pool_provider_id = "github-provider"
-
-  attribute_mapping = {
-    "google.subject"       = "assertion.sub"
-    "attribute.actor"      = "assertion.actor"
-    "attribute.aud"        = "assertion.aud"
-    "attribute.repository" = "assertion.repository"
-  }
-
-  attribute_condition = "assertion.repository_owner==\"backstage-dummy-org\""
-
-  oidc {
-    issuer_uri = "https://token.actions.githubusercontent.com"
-  }
-}
-
-resource "google_service_account" "github_actions" {
-  project      = module.project-services.project_id
-  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
-  display_name = "Service Account used for GitHub Actions"
-}
-
-resource "google_service_account_iam_member" "workload_identity_user" {
-  service_account_id = google_service_account.github_actions.name
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
-}
-
 # Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "runsa" {
   project      = module.project-services.project_id
   account_id   = "genai-rag-run-sa-${random_id.id.hex}"
   display_name = "Service Account for Cloud Run"
+
 }
 
-# Applies permissions to the Cloud Run SA
+# # Applies permissions to the Cloud Run SA
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
     "roles/cloudsql.instanceUser",
@@ -89,6 +52,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
       cloud_sql_instance {
         instances = [google_sql_database_instance.main.connection_name]
       }
+    }
 
     containers {
       image = var.retrieval_container
@@ -96,7 +60,6 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
         name       = "cloudsql"
         mount_path = "/cloudsql"
       }
-
       env {
         name  = "APP_HOST"
         value = "0.0.0.0"
@@ -139,6 +102,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
         }
       }
     }
+
   }
 }
 
@@ -154,7 +118,6 @@ resource "google_cloud_run_v2_service" "frontend_service" {
 
     containers {
       image = var.frontend_container
-
       env {
         name  = "SERVICE_URL"
         value = google_cloud_run_v2_service.retrieval_service.uri
@@ -175,7 +138,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   }
 }
 
-# Set the frontend service to allow all users
+# # Set the frontend service to allow all users
 resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   location = google_cloud_run_v2_service.frontend_service.location
   project  = google_cloud_run_v2_service.frontend_service.project
@@ -184,12 +147,14 @@ resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   member   = "allUsers"
 }
 
+
+
 data "google_service_account_id_token" "oidc" {
   target_audience = google_cloud_run_v2_service.retrieval_service.uri
 }
 
-# Trigger the database init step from the retrieval service
-# Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
+# # Trigger the database init step from the retrieval service
+# # Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
 
 # tflint-ignore: terraform_unused_declarations
 data "http" "database_init" {
@@ -198,7 +163,6 @@ data "http" "database_init" {
   request_headers = {
     Accept = "application/json"
   Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}" }
-  }
 
   depends_on = [
     google_sql_database.database,
