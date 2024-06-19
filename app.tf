@@ -16,7 +16,7 @@
 
 
 resource "google_iam_workload_identity_pool" "main" {
-  provider                  = google-beta
+  provider                  = google
   project                   = var.project_id
   workload_identity_pool_id = var.pool_id
   display_name              = var.pool_display_name
@@ -32,23 +32,23 @@ provider "google" {
 resource "google_iam_workload_identity_pool" "github_pool" {
   provider = google
 
-  display_name = "github-pool"
-  workload_identity_pool_id = "google_iam_workload_identity_pool.main.workload_identity_pool_id"
+  display_name = var.provider_display_name
+  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
 }
 
 resource "google_iam_workload_identity_pool_provider" "github_provider" {
   provider = google
 
-  workload_identity_pool_id = google_iam_workload_identity_pool.github_pool.id
+  workload_identity_pool_id = google_iam_workload_identity_pool.main.workload_identity_pool_id
   display_name              = "github-provider"
   attribute_mapping {
-    attribute = "google-subject"
+    attribute = var.attribute_mapping
     value     = "github-subject"
   }
 }
 
 resource "google_iam_workload_identity_pool_provider" "main" {
-  provider                           = google-beta
+  provider                           = google
   project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.main.workload_identity_pool_id
   workload_identity_pool_provider_id = var.provider_id
