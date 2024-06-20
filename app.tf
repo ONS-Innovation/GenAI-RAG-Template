@@ -55,6 +55,7 @@ resource "google_iam_workload_identity_pool_provider" "gemini-rag" {
     allowed_audiences = var.allowed_audiences
     issuer_uri        = var.issuer_uri
   }
+  depends_on = [google_iam_workload_identity_pool.gemini-rag]
 }
 
 resource "google_service_account_iam_member" "wif-sa" {
@@ -70,13 +71,6 @@ resource "google_service_account" "runsa" {
   account_id   = "genai-rag-run-sa-${random_id.id.hex}"
   display_name = "Service Account for Cloud Run"
 
-}
-
-resource "google_project_iam_member" "workload_identity_user" {
-  provider  = google
-  project   = "hackathon-cp-project-team-1"
-  role      = "roles/iam.workloadIdentityUser"
-  member    = "serviceAccount:genai-rag-run-sa-0192aec6@hackathon-cp-project-team-1.iam.gserviceaccount.com"
 }
 
 # # Applies permissions to the Cloud Run SA
