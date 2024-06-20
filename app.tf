@@ -14,38 +14,6 @@
  * limitations under the License.
  */
 
-
-resource "google_iam_workload_identity_pool" "gemini-rag" {
-  provider                  = google-beta
-  project                   = var.project_id
-  workload_identity_pool_id = var.pool_id
-  display_name              = var.pool_display_name
-  description               = var.pool_description
-  disabled                  = false
-}
-
-provider "google" {
-  credentials = file("./pool_id_cred_config.json")
-  project = "var.project_id"
-  region  = "var.region"
-}
-
-resource "google_iam_workload_identity_pool_provider" "gemini-rag" {
-  provider                           = google
-  project                            = var.project_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini-rag.name
-  workload_identity_pool_provider_id = var.provider_id
-  display_name                       = var.provider_display_name
-  description                        = var.provider_description
-  attribute_condition                = var.attribute_condition
-  attribute_mapping                  = var.attribute_mapping
-  oidc {
-    allowed_audiences = var.allowed_audiences
-    issuer_uri        = var.issuer_uri
-  }
-  depends_on = [google_iam_workload_identity_pool.gemini-rag]
-}
-
 resource "google_service_account_iam_member" "wif-sa" {
   for_each           = var.sa_mapping
   service_account_id = each.value.sa_name
