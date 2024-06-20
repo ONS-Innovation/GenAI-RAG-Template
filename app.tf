@@ -24,14 +24,6 @@ resource "google_iam_workload_identity_pool" "gemini-rag" {
   disabled                  = false
 }
 
-resource "google_iam_workload_identity_pool" "gemini_rag" {
-  provider     = google-beta
-  project      = var.project_id
-  display_name = var.pool_display_name
-  description  = var.pool_description
-  disabled     = false
-}
-
 provider "google" {
   credentials = file("./pool_id_cred_config.json")
   project = "var.project_id"
