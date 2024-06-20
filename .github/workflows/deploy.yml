@@ -43,6 +43,7 @@ jobs:
 
       - name: Enable required APIs
         run: |
+          gcloud config set account genai-rag-run-sa-0192aec6@hackathon-cp-project-team-1.iam.gserviceaccount.com
           gcloud services enable cloudresourcemanager.googleapis.com
           gcloud services enable iam.googleapis.com
           gcloud services enable aiplatform.googleapis.com
