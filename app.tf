@@ -24,28 +24,24 @@ resource "google_iam_workload_identity_pool" "gemini-rag" {
   disabled                  = false
 }
 
+resource "google_iam_workload_identity_pool" "gemini_rag" {
+  provider     = google-beta
+  project      = var.project_id
+  display_name = var.pool_display_name
+  description  = var.pool_description
+  disabled     = false
+}
+
 provider "google" {
   credentials = file("./pool_id_cred_config.json")
   project = "var.project_id"
   region  = "var.region"
 }
 
-resource "google_iam_workload_identity_pool_provider" "gemini-rag-provider" {
-  provider                           = google-beta
-  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini_rag.name 
-  workload_identity_pool_provider_id = var.provider_id  // Replace with the actual ID
-  display_name                       = "My OIDC Provider"
-
-  oidc {
-    issuer_uri = "https://token.actions.githubusercontent.com" 
-    allowed_audiences = [101575480515130141293]
-  }
-}
-
 resource "google_iam_workload_identity_pool_provider" "gemini-rag" {
   provider                           = google
   project                            = var.project_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini-rag.workload_identity_pool_id
+  workload_identity_pool_id          = google_iam_workload_identity_pool.gemini-rag.name
   workload_identity_pool_provider_id = var.provider_id
   display_name                       = var.provider_display_name
   description                        = var.provider_description
