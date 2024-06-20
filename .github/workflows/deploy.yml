@@ -43,3 +43,5 @@ jobs:
 
       - name: Apply Terraform configuration
         run: terraform apply -auto-approve
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
