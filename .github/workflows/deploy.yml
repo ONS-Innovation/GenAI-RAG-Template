@@ -1,27 +1,19 @@
-name: Terraform Apply
+name: Terraform on GCP
 
 on:
   push:
     branches:
-      - main
+      - main  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - main  # Trigger on pull requests to main branch
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: read
-      id-token: write
-      actions: read
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -31,15 +23,14 @@ jobs:
           service_account: hackathon-cp-project-team-1@appspot.gserviceaccount.com
           project_id: hackathon-cp-project-team-1
 
-      - name: Authenticate to Google Cloud
-        run: gcloud auth application-default login --no-launch-browser
-  
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-  
-      - name: Terraform Init
-        run: terraform init
-  
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Configure Google Cloud SDK
+        run: |
+          gcloud config set project ${{ steps.auth.outputs.project_id }}
 
+      - name: Terraform Init
+        run: |
+          terraform init
+
+      - name: Terraform Apply
+        run: |
+          terraform apply -var-file=variables.tfvars -auto-approve
