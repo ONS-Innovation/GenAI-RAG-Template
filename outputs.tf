@@ -15,7 +15,7 @@
  */
 
 output "workload_identity_provider" {
-  value = "${google_iam_workload_identity_pool.github_pool.name}/providers/${google_iam_workload_identity_pool_provider.github_provider.workload_identity_pool_provider_id}"
+  value = "${google_iam_workload_identity_pool.github_pool_demo.name}/providers/${google_iam_workload_identity_pool_provider.github_provider_demo.workload_identity_pool_provider_id}"
 }
 
 output "service_account" {
