@@ -27,8 +27,8 @@ jobs:
         id: auth
         uses: google-github-actions/auth@v0.6.0
         with:
-          workload_identity_provider: projects/YOUR_PROJECT_ID/locations/global/workloadIdentityPools/github-pool/providers/github-provider
-          service_account: YOUR_SERVICE_ACCOUNT_EMAIL
+          workload_identity_provider: projects/hackathon-cp-project-team-1/locations/global/workloadIdentityPools/github-pool/providers/github-provider
+          service_account: hackathon-cp-project-team-1@appspot.gserviceaccount.com
 
       - name: Initialize Terraform
         run: terraform init
