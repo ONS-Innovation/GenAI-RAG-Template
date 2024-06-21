@@ -41,7 +41,7 @@ resource "google_service_account" "terraform_sa" {
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = google_service_account.terraform_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool/attribute.repository/${var.github_repo}"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool/attribute.repository/GenAI-RAG-Template"
 }
 
 # Applies permissions to the Cloud Run SA
