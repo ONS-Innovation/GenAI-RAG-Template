@@ -50,13 +50,13 @@ terraform {
 provider "google" {
   project = var.project_id
   region  = var.region
-  credentials = file("{data.google_service_account_id_token.oidc.id_token}")
+  credentials = file("${GOOGLE_GHA_CREDS_PATH}")
 
 }
 
 provider "google-beta" {
   project = var.project_id
   region  = var.region
-  credentials = file("{data.google_service_account_id_token.oidc.id_token}")
+  credentials = file("${GOOGLE_GHA_CREDS_PATH}")
 
 }
