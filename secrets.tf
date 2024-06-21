@@ -41,7 +41,7 @@ resource "google_secret_manager_secret_iam_binding" "cloud_sql_password" {
   project   = module.project-services.project_id
   secret_id = google_secret_manager_secret.cloud_sql_password.id
   role      = "roles/secretmanager.secretAccessor"
-  members   = ["serviceAccount:${google_service_account.runsa.email}"]
+  members   = ["serviceAccount:${google_service_account.github_actions.email}"]
 }
 
 resource "google_secret_manager_secret_version" "cloud_sql_password" {

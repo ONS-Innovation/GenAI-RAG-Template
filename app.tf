@@ -1,20 +1,24 @@
-locals {
-  project_id   = "hackathon-cp-project-team-1"
-  organization = "backstage-dummy-org"
-  repo         = "GenAI-RAG-Template"
+provider "google" {
+  project = var.project_id
+  region  = var.region
+}
+
+provider "google-beta" {
+  project = var.project_id
+  region  = var.region
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {
-  project                   = local.project_id
-  workload_identity_pool_id = "gemini-rag"
-  display_name              = "demo-test"
+  project                   = var.project_id
+  workload_identity_pool_id = "github-pool"
+  display_name              = "GitHub pool"
   description               = "Identity pool for GitHub deployments"
 }
 
 resource "google_iam_workload_identity_pool_provider" "github" {
-  project                            = local.project_id
+  project                            = var.project_id
   workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "gemini-rag-provider"
+  workload_identity_pool_provider_id = "github-provider"
 
   attribute_mapping = {
     "google.subject"       = "assertion.sub"
@@ -23,7 +27,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
     "attribute.repository" = "assertion.repository"
   }
 
-  attribute_condition = "assertion.repository_owner==\"${local.organization}\""
+  attribute_condition = "assertion.repository_owner==\"backstage-dummy-org\""
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
@@ -31,35 +35,18 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 }
 
 resource "google_service_account" "github_actions" {
-  project      = local.project_id
-  account_id   = "github-actions"
-  display_name = "Service Account used for GitHub Actions"
-}
-
-resource "google_service_account" "runsa" {
-  project      = local.project_id
+  project      = module.project-services.project_id
   account_id   = "genai-rag-run-sa-${random_id.id.hex}"
-  display_name = "Service Account for Cloud Run"
-}
-
-resource "google_project_service" "wif_api" {
-  for_each = toset([
-    "iam.googleapis.com",
-    "cloudresourcemanager.googleapis.com",
-    "iamcredentials.googleapis.com",
-    "sts.googleapis.com",
-  ])
-
-  service            = each.value
-  disable_on_destroy = false
+  display_name = "Service Account used for GitHub Actions"
 }
 
 resource "google_service_account_iam_member" "workload_identity_user" {
   service_account_id = google_service_account.github_actions.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/gemini-rag/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
 }
 
+# Applies permissions to the Cloud Run SA
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
     "roles/cloudsql.instanceUser",
@@ -69,18 +56,19 @@ resource "google_project_iam_member" "allrun" {
     "roles/iam.serviceAccountTokenCreator",
   ])
 
-  project = local.project_id
+  project = module.project-services.project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.runsa.email}"
+  member  = "serviceAccount:${google_service_account.github_actions.email}"
 }
 
+# Deploys a service to be used for the database
 resource "google_cloud_run_v2_service" "retrieval_service" {
   name     = "retrieval-service-${random_id.id.hex}"
   location = var.region
-  project  = local.project_id
+  project  = module.project-services.project_id
 
   template {
-    service_account = google_service_account.runsa.email
+    service_account = google_service_account.github_actions.email
     labels          = var.labels
 
     volumes {
@@ -110,7 +98,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
       }
       env {
         name  = "DB_PROJECT"
-        value = local.project_id
+        value = module.project-services.project_id
       }
       env {
         name  = "DB_REGION"
@@ -141,13 +129,14 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   }
 }
 
+# Deploys a service to be used for the frontend
 resource "google_cloud_run_v2_service" "frontend_service" {
   name     = "frontend-service-${random_id.id.hex}"
   location = var.region
-  project  = local.project_id
+  project  = module.project-services.project_id
 
   template {
-    service_account = google_service_account.runsa.email
+    service_account = google_service_account.github_actions.email
     labels          = var.labels
 
     containers {
@@ -158,7 +147,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = google_service_account.runsa.email
+        value = google_service_account.github_actions.email
       }
       env {
         name  = "ORCHESTRATION_TYPE"
@@ -172,6 +161,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   }
 }
 
+# Set the frontend service to allow all users
 resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   location = google_cloud_run_v2_service.frontend_service.location
   project  = google_cloud_run_v2_service.frontend_service.project
@@ -184,11 +174,15 @@ data "google_service_account_id_token" "oidc" {
   target_audience = google_cloud_run_v2_service.retrieval_service.uri
 }
 
+# Trigger the database init step from the retrieval service
+# Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
+
+# tflint-ignore: terraform_unused_declarations
 data "http" "database_init" {
   url    = "${google_cloud_run_v2_service.retrieval_service.uri}/data/import"
   method = "GET"
   request_headers = {
-    Accept = "application/json"
+    Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
   }
 
