@@ -11,6 +11,10 @@ project_id = "hackathon-cp-project-team-1"
 # Example: us-central1
 region = "us-central1"
 
+pool_id = "gemini-rag"
+
+provider_id = "gemini-rag-provider"
+
 # Whether or not to enable underlying apis in this solution.
 # Example: true
 enable_apis = "true"

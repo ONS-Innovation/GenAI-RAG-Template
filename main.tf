@@ -23,13 +23,14 @@ module "project-services" {
   enable_apis = var.enable_apis
 
   activate_apis = [
+    "cloudresourcemanager.googleapis.com",
+    "iam.googleapis.com",
     "aiplatform.googleapis.com",
     "artifactregistry.googleapis.com",
     "cloudapis.googleapis.com",
     "cloudbuild.googleapis.com",
     "compute.googleapis.com",
     "config.googleapis.com",
-    "iam.googleapis.com",
     "run.googleapis.com",
     "secretmanager.googleapis.com",
     "serviceusage.googleapis.com",
