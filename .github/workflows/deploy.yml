@@ -30,17 +30,6 @@ jobs:
           workload_identity_provider: projects/hackathon-cp-project-team-1/locations/global/workloadIdentityPools/github-pool/providers/github-provider
           service_account: hackathon-cp-project-team-1@appspot.gserviceaccount.com
           project_id: hackathon-cp-project-team-1
-
-      - name: Configure Google Cloud SDK
-        run: |
-            gcloud config set project ${{ steps.auth.outputs.project_id }}
-            gcloud config set account wojciech.przybylski@ext.ons.gov.uk
-            gcloud secrets add-iam-policy-binding genai-cloud-sql-password-7c15348d \
-            --member="serviceAccount:hackathon-cp-project-team-1@appspot.gserviceaccount.com" \
-            --role="roles/secretmanager.admin" \
-            --project=hackathon-cp-project-team-1
-
-        
   
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
