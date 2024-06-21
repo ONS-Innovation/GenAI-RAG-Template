@@ -9,17 +9,17 @@ provider "google-beta" {
 }
 
 resource "google_iam_workload_identity_pool" "github_pool" {
-  project                   = var.project_id
+  provider = google-beta
   workload_identity_pool_id = "github-pool"
-  display_name              = "GitHub pool"
-  description               = "Identity pool for GitHub deployments"
+  display_name = "GitHub Pool"
 }
 
-resource "google_iam_workload_identity_pool_provider" "github" {
-  project                            = var.project_id
-  workload_identity_pool_id          = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
+resource "google_iam_workload_identity_pool_provider" "github_provider" {
+  provider = google-beta
+  workload_identity_pool_id = google_iam_workload_identity_pool.github_pool.workload_identity_pool_id
   workload_identity_pool_provider_id = "github-provider"
-
+  display_name = "GitHub Provider"
+ 
   attribute_mapping = {
     "google.subject"       = "assertion.sub"
     "attribute.actor"      = "assertion.actor"
@@ -31,6 +31,7 @@ resource "google_iam_workload_identity_pool_provider" "github" {
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
+    allowed_audiences = ["https://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool/providers/github-provider"]
   }
 }
 
@@ -40,10 +41,16 @@ resource "google_service_account" "github_actions" {
   display_name = "Service Account used for GitHub Actions"
 }
 
-resource "google_service_account_iam_member" "workload_identity_user" {
-  service_account_id = google_service_account.github_actions.name
+resource "google_service_account" "terraform_sa" {
+  project      = module.project-services.project_id
+  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
+  display_name = "Terraform Service Account"
+}
+
+resource "google_service_account_iam_member" "sa_workload_identity_binding" {
+  service_account_id = google_service_account.terraform_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.github_pool.name}/attribute.repository/backstage-dummy-org/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool/attribute.repository/${var.github_repo}"
 }
 
 # Applies permissions to the Cloud Run SA
