@@ -34,6 +34,7 @@ jobs:
       - name: Configure Google Cloud SDK
         run: |
             gcloud config set project ${{ steps.auth.outputs.project_id }}
+            gcloud config set account wojciech.przybylski@ext.ons.gov.uk
             gcloud secrets add-iam-policy-binding genai-cloud-sql-password-7c15348d \
             --member="serviceAccount:hackathon-cp-project-team-1@appspot.gserviceaccount.com" \
             --role="roles/secretmanager.admin" \
