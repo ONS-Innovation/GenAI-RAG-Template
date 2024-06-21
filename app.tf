@@ -181,7 +181,7 @@ data "http" "get_workload_identity_pool_provider" {
     Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
   }
-}
+
 
   depends_on = [
     google_sql_database.database,
