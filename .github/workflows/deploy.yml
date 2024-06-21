@@ -32,7 +32,7 @@ jobs:
           project_id: hackathon-cp-project-team-1
 
       - name: Authenticate to Google Cloud
-        run: gcloud auth application-default login --brief --no-launch-browser
+        run: gcloud auth application-default login --no-launch-browser
   
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
