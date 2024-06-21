@@ -47,3 +47,16 @@ terraform {
     module_name = "blueprints/terraform/terraform-genai-rag/v0.1.2"
   }
 }
+provider "google" {
+  project = var.project_id
+  region  = var.region
+  credentials = file("/home/runner/.config/gcloud/application_default_credentials.json")
+
+}
+
+provider "google-beta" {
+  project = var.project_id
+  region  = var.region
+  credentials = file("/home/runner/.config/gcloud/application_default_credentials.json")
+
+}

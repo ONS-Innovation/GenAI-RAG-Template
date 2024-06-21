@@ -1,19 +1,27 @@
-name: Terraform on GCP
+name: Terraform Apply
 
 on:
   push:
     branches:
-      - main  # Trigger on push to main branch
-  pull_request:
-    branches:
-      - main  # Trigger on pull requests to main branch
+      - main
 
 jobs:
   terraform:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_version: 1.0.0
 
       - name: Authenticate to Google Cloud
         id: auth
@@ -25,12 +33,16 @@ jobs:
 
       - name: Configure Google Cloud SDK
         run: |
-          gcloud config set project ${{ steps.auth.outputs.project_id }}
+            gcloud config set project ${{ steps.auth.outputs.project_id }}
 
+        
+  
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+  
       - name: Terraform Init
-        run: |
-          terraform init
-
+        run: terraform init
+  
       - name: Terraform Apply
-        run: |
-          terraform apply -var-file=variables.tfvars -auto-approve
+        run: terraform apply -auto-approve
+

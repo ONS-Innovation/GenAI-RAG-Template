@@ -1,12 +1,3 @@
-provider "google" {
-  project = var.project_id
-  region  = var.region
-}
-
-provider "google-beta" {
-  project = var.project_id
-  region  = var.region
-}
 
 resource "google_iam_workload_identity_pool" "github_pool" {
   provider = google-beta
