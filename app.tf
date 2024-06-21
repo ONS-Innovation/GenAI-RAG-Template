@@ -175,13 +175,13 @@ data "google_service_account_id_token" "oidc" {
 # Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
 
 # tflint-ignore: terraform_unused_declarations
-data "http" "database_init" {
-  url    = "${google_cloud_run_v2_service.retrieval_service.uri}/data/import"
-  method = "GET"
+data "http" "get_workload_identity_pool_provider" {
+  url = "https://iam.googleapis.com/v1/projects/hackathon-cp-project-team-1/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
   request_headers = {
     Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
   }
+}
 
   depends_on = [
     google_sql_database.database,
