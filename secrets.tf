@@ -37,12 +37,6 @@ resource "google_secret_manager_secret" "cloud_sql_password" {
   depends_on = [module.project-services]
 }
 
-resource "google_secret_manager_secret_iam_binding" "cloud_sql_password" {
-  project   = module.project-services.project_id
-  secret_id = google_secret_manager_secret.cloud_sql_password.id
-  role      = "roles/secretmanager.secretAccessor"
-  members   = ["serviceAccount:${existing_service_account_email.github_actions.email}"]
-}
 
 resource "google_secret_manager_secret_version" "cloud_sql_password" {
   secret      = google_secret_manager_secret.cloud_sql_password.id

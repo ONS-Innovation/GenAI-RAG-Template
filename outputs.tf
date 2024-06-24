@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-output "service_account" {
-  value = existing_service_account_email.github_actions.email
-}
-
 output "deployment_ip_address" {
   description = "Web URL link"
   value       = google_cloud_run_v2_service.frontend_service.uri
