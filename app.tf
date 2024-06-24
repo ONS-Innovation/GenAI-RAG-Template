@@ -16,7 +16,7 @@ resource "google_project_iam_member" "allrun" {
 
   project = var.project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.github_actions.email}"
+  member  = "serviceAccount:${google_service_account.var.existing_service_account_email}"
 }
 
 # Deploys a service to be used for the database
@@ -26,7 +26,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   project  = var.project_id
 
   template {
-    service_account = google_service_account.github_actions.email
+    service_account = google_service_account.var.existing_service_account_email
     labels          = var.labels
 
     volumes {
@@ -94,7 +94,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   project  = var.project_id
 
   template {
-    service_account = google_service_account.github_actions.email
+    service_account = google_service_account.var.existing_service_account_email
     labels          = var.labels
 
     containers {
@@ -105,7 +105,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = google_service_account.github_actions.email
+        value = google_service_account.var.existing_service_account_email
       }
       env {
         name  = "ORCHESTRATION_TYPE"
