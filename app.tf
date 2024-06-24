@@ -16,7 +16,7 @@ resource "google_project_iam_member" "allrun" {
 
   project = var.project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.var.existing_service_account_email}"
+  member  = "serviceAccount:${var.existing_service_account_email}"
 }
 
 # Deploys a service to be used for the database
@@ -26,7 +26,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   project  = var.project_id
 
   template {
-    service_account = google_service_account.var.existing_service_account_email
+    service_account = var.existing_service_account_email
     labels          = var.labels
 
     volumes {
