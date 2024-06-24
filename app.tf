@@ -109,15 +109,16 @@ resource "google_cloud_run_service_iam_member" "noauth_frontend" {
 }
 
 data "google_service_account_id_token" "oidc" {
-  target_audience = "https://token.actions.githubusercontent.com/.well-known/jwks"
+  target_audience = google_cloud_run_v2_service.retrieval_service.uri
 }
 
 # Trigger the database init step from the retrieval service
 # Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
 
 # tflint-ignore: terraform_unused_declarations
-data "http" "get_workload_identity_pool_provider" {
-  url = "https://iam.googleapis.com/v1/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/providers/${var.existing_workload_identity_pool_provider_id}"
+data "http" "database_init" {
+  url = "${google_cloud_run_v2_service.retrieval_service.uri}/data/import"
+  method = "GET"
   request_headers = {
     Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
