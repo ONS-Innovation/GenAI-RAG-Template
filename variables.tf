@@ -24,6 +24,7 @@ variable "project_id" {
   description = "Google Cloud Project ID"
 }
 
+
 variable "existing_workload_identity_pool_id" {
   description = "The ID of the existing Workload Identity Pool"
   type        = string
@@ -52,10 +53,6 @@ variable "pool_description" {
   default     = "Workload Identity Pool managed by Terraform"
 }
 
-variable "provider_id" {
-  type        = string
-  description = "Workload Identity Pool Provider id"
-}
 
 variable "issuer_uri" {
   type        = string
