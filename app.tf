@@ -4,13 +4,6 @@ resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
 }
 
-# Create a new service account for GitHub Actions (if needed)
-resource "google_service_account" "github_actions" {
-  project      = var.project_id
-  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
-  display_name = "Service Account used for GitHub Actions"
-}
-
 # Applies permissions to the Cloud Run SA
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
@@ -23,7 +16,7 @@ resource "google_project_iam_member" "allrun" {
 
   project = var.project_id
   role    = each.key
-  member  = "serviceAccount:${google_service_account.github_actions.email}"
+  member  = "serviceAccount:${existing_service_account_email.github_actions.email}"
 }
 
 # Deploys a service to be used for the database
@@ -33,7 +26,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   project  = var.project_id
 
   template {
-    service_account = google_service_account.github_actions.email
+    service_account = existing_service_account_email.github_actions.email
     labels          = var.labels
 
     volumes {
@@ -101,7 +94,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   project  = var.project_id
 
   template {
-    service_account = google_service_account.github_actions.email
+    service_account = existing_service_account_email.github_actions.email
     labels          = var.labels
 
     containers {
@@ -112,7 +105,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = google_service_account.github_actions.email
+        value = existing_service_account_email.github_actions.email
       }
       env {
         name  = "ORCHESTRATION_TYPE"
