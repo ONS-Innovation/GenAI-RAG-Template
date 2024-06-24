@@ -1,10 +1,5 @@
-variable "existing_service_account_email" {
-  description = "The email of the existing service account to be used"
-  default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
-}
-
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
-  service_account_id = var.existing_service_account_email
+  service_account_id = hackathon-cp-project-team-1@appspot.gserviceaccount.com
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
 }
@@ -20,7 +15,7 @@ resource "google_project_iam_member" "allrun" {
 
   project = module.project-services.project_id
   role    = each.key
-  member  = "serviceAccount:${var.existing_service_account_email}"
+  member  = "serviceAccount:${hackathon-cp-project-team-1@appspot.gserviceaccount.com}"
 }
 
 resource "google_cloud_run_v2_service" "retrieval_service" {
@@ -29,7 +24,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   project  = module.project-services.project_id
 
   template {
-    service_account = var.existing_service_account_email
+    service_account = hackathon-cp-project-team-1@appspot.gserviceaccount.com
     labels          = var.labels
 
     volumes {
@@ -96,7 +91,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   project  = module.project-services.project_id
 
   template {
-    service_account = var.existing_service_account_email
+    service_account = hackathon-cp-project-team-1@appspot.gserviceaccount.com
     labels          = var.labels
 
     containers {
@@ -107,7 +102,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = var.existing_service_account_email
+        value = hackathon-cp-project-team-1@appspot.gserviceaccount.com
       }
       env {
         name  = "ORCHESTRATION_TYPE"
