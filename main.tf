@@ -34,7 +34,7 @@ module "project-services" {
     "compute.googleapis.com",
     "config.googleapis.com",
     "run.googleapis.com",
-    "https://token.actions.githubusercontent.com",
+    "token.actions.githubusercontent.com",
     "secretmanager.googleapis.com",
     "sqladmin.googleapis.com",
     "storage-api.googleapis.com",
