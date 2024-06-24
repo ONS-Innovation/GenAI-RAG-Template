@@ -109,7 +109,7 @@ resource "google_cloud_run_service_iam_member" "noauth_frontend" {
 }
 
 data "google_service_account_id_token" "oidc" {
-  target_audience = https://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo
+  target_audience = "https://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
 }
 
 # Trigger the database init step from the retrieval service
