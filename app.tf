@@ -1,23 +1,7 @@
-# Data source to fetch existing Workload Identity Pool
-data "google_iam_workload_identity_pool" "github-pool-demo" {
-  project = var.project_id
-  location = "global"
-  workload_identity_pool_id = "github-pool-demo"
-}
-
-# Data source to fetch existing Workload Identity Pool Provider
-data "google_iam_workload_identity_pool_provider" "github-provider-demo" {
-  project = var.project_id
-  location = "global"
-  workload_identity_pool_id = data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "github-provider-demo"
-}
-
-# IAM binding to allow the workload identity to impersonate the service account
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
 }
 
 # Applies permissions to the Cloud Run SA
@@ -153,7 +137,7 @@ data "google_service_account_id_token" "oidc" {
 
 # tflint-ignore: terraform_unused_declarations
 data "http" "get_workload_identity_pool_provider" {
-  url = "https://iam.googleapis.com/v1/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
+  url = "https://iam.googleapis.com/v1/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/providers/${var.existing_workload_identity_pool_provider_id}"
   request_headers = {
     Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
