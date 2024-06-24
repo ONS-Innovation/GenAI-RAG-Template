@@ -21,7 +21,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider_demo" {
 
   oidc {
     issuer_uri = "https://token.actions.githubusercontent.com"
-    allowed_audiences = ["https://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"]
+    allowed_audiences = ["https://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"]
   }
 }
 
