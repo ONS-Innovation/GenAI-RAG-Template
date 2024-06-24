@@ -24,7 +24,7 @@ jobs:
           terraform_version: 1.0.0
 
       - name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v0.6.0
         with:
           token_format: 'access_token'
           audience: '//iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo'
