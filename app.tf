@@ -7,7 +7,7 @@ resource "google_iam_workload_identity_pool" "github_pool_demo" {
 resource "google_iam_workload_identity_pool_provider" "github_provider_demo" {
   provider = google-beta
   workload_identity_pool_id = google_iam_workload_identity_pool.github_pool_demo.workload_identity_pool_id
-  workload_identity_pool_provider_id = "github-provider"
+  workload_identity_pool_provider_id = "github-provider-demo"
   display_name = "GitHub Provider"
  
   attribute_mapping = {
