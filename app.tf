@@ -1,6 +1,6 @@
 resource "google_iam_workload_identity_pool" "github_pool_demo" {
   provider = google-beta
-  workload_identity_pool_id = "github-pool"
+  workload_identity_pool_id = "github-pool-demo"
   display_name = "GitHub Pool"
 }
 
@@ -40,7 +40,7 @@ resource "google_service_account" "terraform_sa" {
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = google_service_account.terraform_sa.name
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool/attribute.repository/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/attribute.repository/GenAI-RAG-Template"
 }
 
 # Applies permissions to the Cloud Run SA
