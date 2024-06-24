@@ -1,9 +1,3 @@
-resource "google_service_account_iam_member" "sa_workload_identity_binding" {
-  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
-}
-
 # Applies permissions to the Cloud Run SA
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
