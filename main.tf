@@ -24,6 +24,7 @@ module "project-services" {
 
   activate_apis = [
     "cloudresourcemanager.googleapis.com",
+    "iamcredentials.googleapis.com",
     "iam.googleapis.com",
     "aiplatform.googleapis.com",
     "artifactregistry.googleapis.com",
