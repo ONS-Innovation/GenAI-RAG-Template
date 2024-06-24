@@ -1,17 +1,3 @@
-# Applies permissions to the Cloud Run SA
-resource "google_project_iam_member" "allrun" {
-  for_each = toset([
-    "roles/cloudsql.instanceUser",
-    "roles/cloudsql.client",
-    "roles/run.invoker",
-    "roles/aiplatform.user",
-    "roles/iam.serviceAccountTokenCreator",
-  ])
-
-  project = var.project_id
-  role    = each.key
-  member  = "serviceAccount:${var.existing_service_account_email}"
-}
 
 # Deploys a service to be used for the database
 resource "google_cloud_run_v2_service" "retrieval_service" {
