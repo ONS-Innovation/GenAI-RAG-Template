@@ -1,8 +1,3 @@
-variable "project_id" {
-  description = "The ID of the project"
-  default     = "hackathon-cp-project-team-1"
-}
-
 variable "existing_service_account_email" {
   description = "The email of the existing service account to be used"
   default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
