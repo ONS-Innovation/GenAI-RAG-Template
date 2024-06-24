@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-output "workload_identity_provider" {
-  value = "${google_iam_workload_identity_pool.github_pool_demo.name}/providers/${google_iam_workload_identity_pool_provider.github_provider_demo.workload_identity_pool_provider_id}"
-}
-
 output "service_account" {
-  value = google_service_account.github_actions.email
+  value = existing_service_account_email.github_actions.email
 }
 
 output "deployment_ip_address" {
