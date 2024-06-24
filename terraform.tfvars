@@ -19,6 +19,8 @@ provider_id = "github-provider-demo"
 # Example: true
 enable_apis = "true"
 
+existing_service_account_email = hackathon-cp-project-team-1@appspot.gserviceaccount.com
+
 # Whether or not to protect Cloud SQL resources from deletion when solution is modified or changed.
 # Example: false
 deletion_protection = "false"
