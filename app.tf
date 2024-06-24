@@ -3,12 +3,6 @@ variable "existing_service_account_email" {
   default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
 }
 
-resource "google_service_account_iam_member" "sa_workload_identity_binding" {
-  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
-  role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
-}
-
 # Data source to fetch existing Workload Identity Pool
 data "google_iam_workload_identity_pool" "existing_pool" {
   project = var.project_id
