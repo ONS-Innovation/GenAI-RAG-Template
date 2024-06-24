@@ -1,3 +1,8 @@
+variable "existing_service_account_email" {
+  description = "The email of the existing service account to be used"
+  default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
+}
+
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = var.existing_service_account_email
   role               = "roles/iam.workloadIdentityUser"
