@@ -28,7 +28,8 @@ jobs:
         uses: google-github-actions/auth@v0.6.0
         with:
           token_format: 'access_token'
-          workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools
+          audience: '//iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo'
+          workload_identity_provider: 'projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo'
           service_account: hackathon-cp-project-team-1@appspot.gserviceaccount.com
           project_id: hackathon-cp-project-team-1
       - name: 'Access secret'
