@@ -2,11 +2,36 @@ variable "existing_service_account_email" {
   description = "The email of the existing service account to be used"
   default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
 }
+
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
   member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
 }
+
+# Data source to fetch existing Workload Identity Pool
+data "google_iam_workload_identity_pool" "existing_pool" {
+  project = var.project_id
+  location = "global"
+  workload_identity_pool_id = "github-pool-demo"
+}
+
+# Data source to fetch existing Workload Identity Pool Provider
+data "google_iam_workload_identity_pool_provider" "existing_provider" {
+  project = var.project_id
+  location = "global"
+  workload_identity_pool_id = data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id
+  workload_identity_pool_provider_id = "github-provider-demo"
+}
+
+# IAM binding to allow the workload identity to impersonate the service account
+resource "google_service_account_iam_member" "sa_workload_identity_binding" {
+  service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
+}
+
+
 
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
