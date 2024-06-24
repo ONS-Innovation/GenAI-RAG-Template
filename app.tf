@@ -1,32 +1,17 @@
-variable "existing_service_account_email" {
-  description = "The email of the existing service account to be used"
-  default     = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
-}
-
-# Data source to fetch existing Workload Identity Pool
-data "google_iam_workload_identity_pool" "existing_pool" {
-  project = var.project_id
-  location = "global"
-  workload_identity_pool_id = "github-pool-demo"
-}
-
-# Data source to fetch existing Workload Identity Pool Provider
-data "google_iam_workload_identity_pool_provider" "existing_provider" {
-  project = var.project_id
-  location = "global"
-  workload_identity_pool_id = data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id
-  workload_identity_pool_provider_id = "github-provider-demo"
-}
-
-# IAM binding to allow the workload identity to impersonate the service account
 resource "google_service_account_iam_member" "sa_workload_identity_binding" {
   service_account_id = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
   role               = "roles/iam.workloadIdentityUser"
-  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${data.google_iam_workload_identity_pool.existing_pool.workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
+  member             = "principalSet://iam.googleapis.com/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/attribute.repository/GenAI-RAG-Template"
 }
 
+# Create a new service account for GitHub Actions (if needed)
+resource "google_service_account" "github_actions" {
+  project      = var.project_id
+  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
+  display_name = "Service Account used for GitHub Actions"
+}
 
-
+# Applies permissions to the Cloud Run SA
 resource "google_project_iam_member" "allrun" {
   for_each = toset([
     "roles/cloudsql.instanceUser",
@@ -36,18 +21,19 @@ resource "google_project_iam_member" "allrun" {
     "roles/iam.serviceAccountTokenCreator",
   ])
 
-  project = module.project-services.project_id
+  project = var.project_id
   role    = each.key
-  member  = "serviceAccount:projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
+  member  = "serviceAccount:${google_service_account.github_actions.email}"
 }
 
+# Deploys a service to be used for the database
 resource "google_cloud_run_v2_service" "retrieval_service" {
   name     = "retrieval-service-${random_id.id.hex}"
   location = var.region
-  project  = module.project-services.project_id
+  project  = var.project_id
 
   template {
-    service_account = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
+    service_account = google_service_account.github_actions.email
     labels          = var.labels
 
     volumes {
@@ -77,7 +63,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
       }
       env {
         name  = "DB_PROJECT"
-        value = module.project-services.project_id
+        value = var.project_id
       }
       env {
         name  = "DB_REGION"
@@ -108,13 +94,14 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
   }
 }
 
+# Deploys a service to be used for the frontend
 resource "google_cloud_run_v2_service" "frontend_service" {
   name     = "frontend-service-${random_id.id.hex}"
   location = var.region
-  project  = module.project-services.project_id
+  project  = var.project_id
 
   template {
-    service_account = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
+    service_account = google_service_account.github_actions.email
     labels          = var.labels
 
     containers {
@@ -125,7 +112,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = "projects/${var.project_id}/serviceAccounts/${var.existing_service_account_email}"
+        value = google_service_account.github_actions.email
       }
       env {
         name  = "ORCHESTRATION_TYPE"
@@ -139,6 +126,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   }
 }
 
+# Set the frontend service to allow all users
 resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   location = google_cloud_run_v2_service.frontend_service.location
   project  = google_cloud_run_v2_service.frontend_service.project
@@ -151,8 +139,12 @@ data "google_service_account_id_token" "oidc" {
   target_audience = google_cloud_run_v2_service.retrieval_service.uri
 }
 
+# Trigger the database init step from the retrieval service
+# Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
+
+# tflint-ignore: terraform_unused_declarations
 data "http" "get_workload_identity_pool_provider" {
-  url = "https://iam.googleapis.com/v1/projects/hackathon-cp-project-team-1/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo"
+  url = "https://iam.googleapis.com/v1/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/providers/${var.existing_workload_identity_pool_provider_id}"
   request_headers = {
     Accept        = "application/json"
     Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"

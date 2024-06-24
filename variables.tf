@@ -24,10 +24,21 @@ variable "project_id" {
   description = "Google Cloud Project ID"
 }
 
-variable "pool_id" {
+variable "existing_workload_identity_pool_id" {
+  description = "The ID of the existing Workload Identity Pool"
   type        = string
-  description = "Workload Identity Pool ID"
 }
+
+variable "existing_workload_identity_pool_provider_id" {
+  description = "The ID of the existing Workload Identity Pool Provider"
+  type        = string
+}
+
+variable "existing_service_account_email" {
+  description = "The email of the existing service account"
+  type        = string
+}
+
 
 variable "pool_display_name" {
   type        = string
