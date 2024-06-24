@@ -116,12 +116,12 @@ data "google_service_account_id_token" "oidc" {
 # Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
 
 # tflint-ignore: terraform_unused_declarations
-data "http" "get_workload_identity_pool_provider" {
-  url = "https://iam.googleapis.com/v1/projects/${var.project_id}/locations/global/workloadIdentityPools/${var.existing_workload_identity_pool_id}/providers/${var.existing_workload_identity_pool_provider_id}"
+data "http" "get_github_actions_jwks" {
+  url = "https://token.actions.githubusercontent.com/.well-known/jwks"
   request_headers = {
-    Accept        = "application/json"
-    Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
+    Accept = "application/json"
   }
+
 
   depends_on = [
     google_sql_database.database,

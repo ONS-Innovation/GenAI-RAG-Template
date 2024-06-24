@@ -25,6 +25,7 @@ module "project-services" {
   activate_apis = [
     "cloudresourcemanager.googleapis.com",
     "iamcredentials.googleapis.com",
+    "serviceusage.googleapis.com",
     "iam.googleapis.com",
     "aiplatform.googleapis.com",
     "artifactregistry.googleapis.com",
@@ -33,8 +34,8 @@ module "project-services" {
     "compute.googleapis.com",
     "config.googleapis.com",
     "run.googleapis.com",
+    "https://token.actions.githubusercontent.com",
     "secretmanager.googleapis.com",
-    "serviceusage.googleapis.com",
     "sqladmin.googleapis.com",
     "storage-api.googleapis.com",
     "storage.googleapis.com",
