@@ -38,7 +38,7 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
-    - name: Terraform Apply --auto-approve
+    - name: Terraform Destroy --auto-approve
       run: terraform destroy -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
