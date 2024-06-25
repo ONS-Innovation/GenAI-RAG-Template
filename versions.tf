@@ -50,11 +50,9 @@ terraform {
 provider "google" {
   project = var.project_id
   region  = var.region
-  credentials = "./hackathon-cp-project-team-1-81c809d05cd6.json"
 }
 
 provider "google-beta" {
   project = var.project_id
   region  = var.region
-  credentials = "./hackathon-cp-project-team-1-81c809d05cd6.json"
 }
