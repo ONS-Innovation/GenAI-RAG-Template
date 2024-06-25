@@ -11,15 +11,9 @@ project_id = "hackathon-cp-project-team-1"
 # Example: us-central1
 region = "us-central1"
 
-existing_workload_identity_pool_id = "github-pool-demo"
-
-existing_workload_identity_pool_provider_id = "github-provider-demo"
-
 # Whether or not to enable underlying apis in this solution.
 # Example: true
 enable_apis = "true"
-
-existing_service_account_email = "hackathon-cp-project-team-1@appspot.gserviceaccount.com"
 
 # Whether or not to protect Cloud SQL resources from deletion when solution is modified or changed.
 # Example: false

@@ -1,12 +1,50 @@
+/**
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+# Creates the Service Account to be used by Cloud Run
+resource "google_service_account" "runsa" {
+  project      = module.project-services.project_id
+  account_id   = "genai-rag-run-sa-${random_id.id.hex}"
+  display_name = "Service Account for Cloud Run"
+
+}
+
+# # Applies permissions to the Cloud Run SA
+resource "google_project_iam_member" "allrun" {
+  for_each = toset([
+    "roles/cloudsql.instanceUser",
+    "roles/cloudsql.client",
+    "roles/run.invoker",
+    "roles/aiplatform.user",
+    "roles/iam.serviceAccountTokenCreator",
+  ])
+
+  project = module.project-services.project_id
+  role    = each.key
+  member  = "serviceAccount:${google_service_account.runsa.email}"
+}
 
 # Deploys a service to be used for the database
 resource "google_cloud_run_v2_service" "retrieval_service" {
   name     = "retrieval-service-${random_id.id.hex}"
   location = var.region
-  project  = var.project_id
+  project  = module.project-services.project_id
 
   template {
-    service_account = var.existing_service_account_email
+    service_account = google_service_account.runsa.email
     labels          = var.labels
 
     volumes {
@@ -36,7 +74,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
       }
       env {
         name  = "DB_PROJECT"
-        value = var.project_id
+        value = module.project-services.project_id
       }
       env {
         name  = "DB_REGION"
@@ -64,6 +102,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
         }
       }
     }
+
   }
 }
 
@@ -71,10 +110,10 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
 resource "google_cloud_run_v2_service" "frontend_service" {
   name     = "frontend-service-${random_id.id.hex}"
   location = var.region
-  project  = var.project_id
+  project  = module.project-services.project_id
 
   template {
-    service_account = var.existing_service_account_email
+    service_account = google_service_account.runsa.email
     labels          = var.labels
 
     containers {
@@ -85,7 +124,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
       }
       env {
         name  = "SERVICE_ACCOUNT_EMAIL"
-        value = var.existing_service_account_email
+        value = google_service_account.runsa.email
       }
       env {
         name  = "ORCHESTRATION_TYPE"
@@ -99,7 +138,7 @@ resource "google_cloud_run_v2_service" "frontend_service" {
   }
 }
 
-# Set the frontend service to allow all users
+# # Set the frontend service to allow all users
 resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   location = google_cloud_run_v2_service.frontend_service.location
   project  = google_cloud_run_v2_service.frontend_service.project
@@ -108,21 +147,22 @@ resource "google_cloud_run_service_iam_member" "noauth_frontend" {
   member   = "allUsers"
 }
 
+
+
 data "google_service_account_id_token" "oidc" {
   target_audience = google_cloud_run_v2_service.retrieval_service.uri
 }
 
-# Trigger the database init step from the retrieval service
-# Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
+# # Trigger the database init step from the retrieval service
+# # Manual Run: curl -H "Authorization: Bearer $(gcloud auth print-identity-token)" {run_service}/data/import
 
 # tflint-ignore: terraform_unused_declarations
 data "http" "database_init" {
-  url = "${google_cloud_run_v2_service.retrieval_service.uri}/data/import"
+  url    = "${google_cloud_run_v2_service.retrieval_service.uri}/data/import"
   method = "GET"
   request_headers = {
-    Accept        = "application/json"
-    Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}"
-  }
+    Accept = "application/json"
+  Authorization = "Bearer ${data.google_service_account_id_token.oidc.id_token}" }
 
   depends_on = [
     google_sql_database.database,

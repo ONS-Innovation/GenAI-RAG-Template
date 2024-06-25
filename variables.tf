@@ -24,86 +24,6 @@ variable "project_id" {
   description = "Google Cloud Project ID"
 }
 
-
-variable "existing_workload_identity_pool_id" {
-  description = "The ID of the existing Workload Identity Pool"
-  type        = string
-}
-
-variable "existing_workload_identity_pool_provider_id" {
-  description = "The ID of the existing Workload Identity Pool Provider"
-  type        = string
-}
-
-variable "existing_service_account_email" {
-  description = "The email of the existing service account"
-  type        = string
-}
-
-
-variable "pool_display_name" {
-  type        = string
-  description = "Workload Identity Pool display name"
-  default     = null
-}
-
-variable "pool_description" {
-  type        = string
-  description = "Workload Identity Pool description"
-  default     = "Workload Identity Pool managed by Terraform"
-}
-
-
-variable "issuer_uri" {
-  type        = string
-  description = "Workload Identity Pool Issuer URL"
-  default     = "https://token.actions.githubusercontent.com"
-}
-
-variable "provider_display_name" {
-  type        = string
-  description = "Workload Identity Pool Provider display name"
-  default     = null
-}
-
-variable "provider_description" {
-  type        = string
-  description = "Workload Identity Pool Provider description"
-  default     = "Workload Identity Pool Provider managed by Terraform"
-}
-
-variable "attribute_condition" {
-  type        = string
-  description = "Workload Identity Pool Provider attribute condition expression. [More info](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider#attribute_condition)"
-  default     = null
-}
-
-variable "attribute_mapping" {
-  type        = map(any)
-  description = "Workload Identity Pool Provider attribute mapping. [More info](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/iam_workload_identity_pool_provider#attribute_mapping)"
-  default = {
-    "google.subject"       = "assertion.sub"
-    "attribute.actor"      = "assertion.actor"
-    "attribute.aud"        = "assertion.aud"
-    "attribute.repository" = "assertion.repository"
-  }
-}
-
-variable "allowed_audiences" {
-  type        = list(string)
-  description = "Workload Identity Pool Provider allowed audiences."
-  default     = []
-}
-
-variable "sa_mapping" {
-  type = map(object({
-    sa_name   = string
-    attribute = string
-  }))
-  description = "Service Account resource names and corresponding WIF provider attributes. If attribute is set to `*` all identities in the pool are granted access to SAs."
-  default     = {}
-}
-
 variable "region" {
   type        = string
   description = "Google Cloud Region"
@@ -131,11 +51,11 @@ variable "deletion_protection" {
 variable "frontend_container" {
   type        = string
   description = "The public Artifact Registry URI for the frontend container"
-  default     = "us-central1-docker.pkg.dev/hackathon-cp-project-team-1/rag-genai/frontend-service:latest"
+  default     = "us-docker.pkg.dev/google-samples/containers/jss/rag-frontend-service:v0.0.1"
 }
 
 variable "retrieval_container" {
   type        = string
   description = "The public Artifact Registry URI for the retrieval container"
-  default     = "us-central1-docker.pkg.dev/hackathon-cp-project-team-1/rag-genai/retrieval-service:latest"
+  default     = "us-docker.pkg.dev/google-samples/containers/jss/rag-retrieval-service:v0.0.2"
 }
