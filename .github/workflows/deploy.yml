@@ -37,7 +37,7 @@ jobs:
         gcloud iam service-accounts add-iam-policy-binding \
         my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com \
         --role="roles/iam.workloadIdentityUser" \
-        --member="principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/${{values.owner | dump}}/${{values.repo | dump}}
+        --member="principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/${{values.owner}}/${{values.repo}}
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
