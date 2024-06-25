@@ -1,12 +1,14 @@
-name: Terraform Apply
+name: 'Terraform CI'
 
 on:
   push:
     branches:
       - main
+  pull_request:
 
 jobs:
   terraform:
+    name: 'Terraform'
     runs-on: ubuntu-latest
 
     permissions:
@@ -15,27 +17,28 @@ jobs:
       actions: read
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.0.0
+    - name: Install Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        project_id: hackathon-cp-project-team-1
 
-      - name: Authenticate to Google Cloud
-        id: auth
-        uses: google-github-actions/auth@v0.6.0
-        with:
-          workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools/github-pool-demo/providers/github-provider-demo
-          service_account: my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
-    
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-  
-      - name: Terraform Init
-        run: terraform init
-  
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+    - name: Authenticate to Google Cloud
+      id: auth
+      uses: google-github-actions/auth@v1
+      with:
+        workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
+        service_account:  my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform -chdir=terraform init
+
+    - name: Terraform Apply --auto-approve
+      run: terraform -chdir=terraform apply -auto-approve
+      env:
+        GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
