@@ -30,7 +30,6 @@ resource "google_project_iam_member" "allrun" {
     "roles/run.invoker",
     "roles/aiplatform.user",
     "roles/iam.serviceAccountTokenCreator",
-    "roles/iam.serviceAccountTokenCreator"
   ])
 
   project = module.project-services.project_id
