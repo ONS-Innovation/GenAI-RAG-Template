@@ -36,9 +36,9 @@ jobs:
       uses: hashicorp/setup-terraform@v1
 
     - name: Terraform Init
-      run: terraform -chdir=terraform init
+      run: terraform init
 
     - name: Terraform Apply --auto-approve
-      run: terraform -chdir=terraform apply -auto-approve
+      run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
