@@ -30,15 +30,14 @@ jobs:
       uses: google-github-actions/auth@v1
       with:
         workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-        service_account:  my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
+        service_account: my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
 
     - name: Set repository for authentication
       run: |
-        gcloud config set account my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
         gcloud iam service-accounts add-iam-policy-binding \
         my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com \
         --role="roles/iam.workloadIdentityUser" \
-        --member="principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/${{values.destination.owner + "/" + values.destination.repo}}"
+        --member="principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/${{ github.repository_owner }}/{{ github.event.repository.name }}"
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
