@@ -35,12 +35,15 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    - name: Set Environment Variables
+    - name: Read Outputs from File
+      id: read_outputs
       run: |
-        echo "Retrieval Service: ${{ secrets.RETRIEVAL_SERVICE }}"
-        echo "Frontend Service: ${{ secrets.FRONTEND_SERVICE }}"
-        echo "Database: ${{ secrets.DATABASE }}"
-        echo "Cloud SQL Password: ${{ secrets.CLOUD_SQL_PASSWORD }}"
+        source terraform_outputs.txt
+        echo "::set-env name=RETRIEVAL_SERVICE::${RETRIEVAL_SERVICE}"
+        echo "::set-env name=FRONTEND_SERVICE::${FRONTEND_SERVICE}"
+        echo "::set-env name=DATABASE::${DATABASE}"
+        echo "::set-env name=CLOUD_SQL_PASSWORD::${CLOUD_SQL_PASSWORD}"
+
 
     - name: Terraform Init
       run: terraform init
@@ -49,3 +52,7 @@ jobs:
       run: terraform destroy -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+        RETRIEVAL_SERVICE: ${{ env.RETRIEVAL_SERVICE }}
+        FRONTEND_SERVICE: ${{ env.FRONTEND_SERVICE }}
+        DATABASE: ${{ env.DATABASE }}
+        CLOUD_SQL_PASSWORD: ${{ env.CLOUD_SQL_PASSWORD }}

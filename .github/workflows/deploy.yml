@@ -42,11 +42,3 @@ jobs:
       run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-        
-    - name: Store Outputs
-      run: |
-        echo "RETRIEVAL_SERVICE=$(terraform output -raw retrieval_service)" >> $GITHUB_ENV
-        echo "FRONTEND_SERVICE=$(terraform output -raw frontend_service)" >> $GITHUB_ENV
-        echo "DATABASE=$(terraform output -raw Database)" >> $GITHUB_ENV
-        echo "CLOUD_SQL_PASSWORD=$(terraform output -raw Cloud_SQL_Password)" >> $GITHUB_ENV
-        

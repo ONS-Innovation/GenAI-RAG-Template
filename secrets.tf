@@ -23,7 +23,7 @@ resource "random_password" "cloud_sql_password" {
 
 resource "google_secret_manager_secret" "cloud_sql_password" {
   project   = module.project-services.project_id
-  secret_id = "genai-cloud-sql-password-${random_id.id.hex}"
+  secret_id = "genai-cloud-sql-password-${name}"
   replication {
     user_managed {
       replicas {

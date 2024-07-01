@@ -1,0 +1,4 @@
+RETRIEVAL_SERVICE=retrieval-service-${{ parameters.name }}
+FRONTEND_SERVICE=frontend-service-${{ parameters.name }}
+DATABASE=genai-rag-db-${{ parameters.name }}
+CLOUD_SQL_PASSWORD=genai-cloud-sql-password-${{ parameters.name }}
