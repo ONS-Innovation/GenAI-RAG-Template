@@ -17,7 +17,7 @@
 
 # Handle Database
 resource "google_sql_database_instance" "main" {
-  name             = "genai-rag-db-${name}"
+  name             = "genai-rag-db-${name.id}"
   database_version = "POSTGRES_15"
   region           = var.region
   project          = module.project-services.project_id

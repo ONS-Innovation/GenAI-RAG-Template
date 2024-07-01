@@ -39,6 +39,6 @@ module "project-services" {
   ]
 }
 
-resource "name" {
+resource "name" "id" {
   value = ${{ parameters.name }}
 }

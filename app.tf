@@ -17,7 +17,7 @@
 # Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "runsa" {
   project      = module.project-services.project_id
-  account_id   = "genai-rag-run-sa-${name}"
+  account_id   = "genai-rag-run-sa-${name.id}"
   display_name = "Service Account for Cloud Run"
 
 }
@@ -39,7 +39,7 @@ resource "google_project_iam_member" "allrun" {
 
 # Deploys a service to be used for the database
 resource "google_cloud_run_v2_service" "retrieval_service" {
-  name     = "retrieval-service-${name}"
+  name     = "retrieval-service-${name.id}"
   location = var.region
   project  = module.project-services.project_id
 
@@ -108,7 +108,7 @@ resource "google_cloud_run_v2_service" "retrieval_service" {
 
 # Deploys a service to be used for the frontend
 resource "google_cloud_run_v2_service" "frontend_service" {
-  name     = "frontend-service-${name}"
+  name     = "frontend-service-${name.id}"
   location = var.region
   project  = module.project-services.project_id
 
