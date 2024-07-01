@@ -24,3 +24,6 @@ deletion_protection = "false"
 labels = {
   "genai-rag": true
 }
+
+name = ${{ parameters.name }}
+

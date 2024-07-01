@@ -40,5 +40,5 @@ module "project-services" {
 }
 
 resource "name" "id" {
-  value = "${{ parameters.name }}"
+  value = var.name
 }
