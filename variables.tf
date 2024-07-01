@@ -60,7 +60,3 @@ variable "retrieval_container" {
   default     = "us-central1-docker.pkg.dev/hackathon-cp-project-team-1/rag-genai/retrieval-service:latest"
 }
 
-variable "name" {
-  description = "The name parameter"
-  type        = string
-}

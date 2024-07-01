@@ -39,6 +39,6 @@ module "project-services" {
   ]
 }
 
-resource "name" "id" {
-  value = var.name
+resource "random_id" "id" {
+  byte_length = 4
 }
