@@ -22,20 +22,20 @@ output "deployment_ip_address" {
 
 output "retrieval_service" {
   description = "Retrieval Service Cloud Run v2 service"
-  value       = retrieval-service-${random_id.id.hex}
+  value       = google_cloud_run_v2_service.retrieval_service.name
 }
 
 output "frontend_service" {
   description = "Frontend Service Cloud Run v2 service"
-  value       = frontend-service-${random_id.id.hex}
+  value       = google_cloud_run_v2_service.frontend_service.name
 }
 
 output "Database" {
   description = "Database Name"
-  value       = genai-rag-db-${random_id.id.hex}
+  value       = google_sql_database_instance.main.name
 }
 
 output "Cloud_SQL_Password" {
   description = "SQL Password"
-  value       = genai-cloud-sql-password-${random_id.id.hex}
+  value       = google_secret_manager_secret.cloud_sql_password.secret_id
 }
