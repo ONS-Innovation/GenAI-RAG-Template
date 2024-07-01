@@ -32,13 +32,6 @@ jobs:
         workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
         service_account: my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
 
-    - name: Set repository for authentication
-      run: |
-        gcloud iam service-accounts add-iam-policy-binding \
-        my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com \
-        --role="roles/iam.workloadIdentityUser" \
-        --member="principalSet://iam.googleapis.com/projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/attribute.repository/${{ github.repository_owner }}/{{ github.event.repository.name }}"
-
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
@@ -49,3 +42,11 @@ jobs:
       run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+        
+    - name: Store Outputs
+      run: |
+        echo "RETRIEVAL_SERVICE=$(terraform output -raw retrieval_service)" >> $GITHUB_ENV
+        echo "FRONTEND_SERVICE=$(terraform output -raw frontend_service)" >> $GITHUB_ENV
+        echo "DATABASE=$(terraform output -raw Database)" >> $GITHUB_ENV
+        echo "CLOUD_SQL_PASSWORD=$(terraform output -raw Cloud_SQL_Password)" >> $GITHUB_ENV
+        

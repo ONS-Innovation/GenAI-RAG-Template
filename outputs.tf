@@ -19,3 +19,23 @@ output "deployment_ip_address" {
   description = "Web URL link"
   value       = google_cloud_run_v2_service.frontend_service.uri
 }
+
+output "retrieval_service" {
+  description = "Retrieval Service Cloud Run v2 service"
+  value       = retrieval-service-${random_id.id.hex}
+}
+
+output "frontend_service" {
+  description = "Frontend Service Cloud Run v2 service"
+  value       = frontend-service-${random_id.id.hex}
+}
+
+output "Database" {
+  description = "Database Name"
+  value       = genai-rag-db-${random_id.id.hex}
+}
+
+output "Cloud_SQL_Password" {
+  description = "SQL Password"
+  value       = genai-cloud-sql-password-${random_id.id.hex}
+}

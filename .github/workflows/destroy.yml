@@ -1,14 +1,14 @@
-name: 'Terraform CI'
+name: 'Terraform Destroy CI'
 
 on:
+  workflow_dispatch:
   push:
     branches:
-      - main
-  pull_request:
+      - destroy
 
 jobs:
   terraform:
-    name: 'Terraform'
+    name: 'Terraform Destroy'
     runs-on: ubuntu-latest
 
     permissions:
@@ -30,10 +30,17 @@ jobs:
       uses: google-github-actions/auth@v1
       with:
         workload_identity_provider: projects/1054015443281/locations/global/workloadIdentityPools/github-actions-pool/providers/github-actions-provider
-        service_account:  my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
+        service_account: my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com
 
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
+
+    - name: Set Environment Variables
+      run: |
+        echo "Retrieval Service: ${{ secrets.RETRIEVAL_SERVICE }}"
+        echo "Frontend Service: ${{ secrets.FRONTEND_SERVICE }}"
+        echo "Database: ${{ secrets.DATABASE }}"
+        echo "Cloud SQL Password: ${{ secrets.CLOUD_SQL_PASSWORD }}"
 
     - name: Terraform Init
       run: terraform init
