@@ -45,9 +45,8 @@ resource "random_id" "id" {
 
 terraform {
   backend "gcs" {
-    bucket  = "your-gcs-bucket-name"
+    bucket  = "terraform-bucket-gemini"
     prefix  = "terraform/state"
-    impersonate_service_account = "my-github-actions-sa@hackathon-cp-project-team-1.iam.gserviceaccount.com"
   }
 }
 
