@@ -1,4 +1,0 @@
-RETRIEVAL_SERVICE=retrieval-service-385f5a0d
-FRONTEND_SERVICE=frontend-service-385f5a0d
-DATABASE=genai-rag-db-385f5a0d
-CLOUD_SQL_PASSWORD=genai-cloud-sql-password-385f5a0d
