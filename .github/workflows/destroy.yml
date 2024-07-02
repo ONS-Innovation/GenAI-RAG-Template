@@ -35,15 +35,6 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    - name: Read Outputs from File
-      id: read_outputs
-      run: |
-        while IFS='=' read -r key value; do
-          if [ -n "$key" ] && [ -n "$value" ]; then
-            echo "$key=$value" >> $GITHUB_ENV
-          fi
-        done < terraform_outputs.txt
-
     - name: Terraform Init
       run: terraform init
 
@@ -51,7 +42,3 @@ jobs:
       run: terraform destroy -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-        RETRIEVAL_SERVICE: ${{ env.RETRIEVAL_SERVICE }}
-        FRONTEND_SERVICE: ${{ env.FRONTEND_SERVICE }}
-        DATABASE: ${{ env.DATABASE }}
-        CLOUD_SQL_PASSWORD: ${{ env.CLOUD_SQL_PASSWORD }}
