@@ -19,23 +19,3 @@ output "deployment_ip_address" {
   description = "Web URL link"
   value       = google_cloud_run_v2_service.frontend_service.uri
 }
-
-output "retrieval_service" {
-  description = "Retrieval Service Cloud Run v2 service"
-  value       = google_cloud_run_v2_service.retrieval_service.name
-}
-
-output "frontend_service" {
-  description = "Frontend Service Cloud Run v2 service"
-  value       = google_cloud_run_v2_service.frontend_service.name
-}
-
-output "Database" {
-  description = "Database Name"
-  value       = google_sql_database_instance.main.name
-}
-
-output "Cloud_SQL_Password" {
-  description = "SQL Password"
-  value       = google_secret_manager_secret.cloud_sql_password.secret_id
-}
