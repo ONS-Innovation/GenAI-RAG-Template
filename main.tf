@@ -43,10 +43,5 @@ resource "random_id" "id" {
   byte_length = 4
 }
 
-terraform {
-  backend "gcs" {
-    bucket  = "terraform-gemini-bucket-${random_id.id.hex}"
-    prefix  = "terraform/state"
-  }
-}
+
 
