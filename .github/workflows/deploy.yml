@@ -35,25 +35,33 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-      
     - name: Init Build Bucket
       run: terraform -chdir=bucket_set_up init
-        
+
     - name: Build Bucket
       run: terraform -chdir=bucket_set_up apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-      
-    - name: Store Outputs to file
+
+    - name: Capture Bucket Name
+      id: get_bucket_name
+      run: echo "BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)" >> $GITHUB_ENV
+
+    - name: Configure Backend
       run: |
-            BUCKET_NAME=$(terraform output -raw bucket_name)
-            echo $BUCKET_NAME
-            
+        cat <<EOF > backend.tf
+        terraform {
+          backend "gcs" {
+            bucket = "${{ env.BUCKET_NAME }}"
+            prefix = "terraform/state"
+          }
+        }
+        EOF
+
     - name: Terraform Init
       run: terraform init
-            
-    - name: Terraform Apply --auto-approve
+
+    - name: Terraform Apply 
       run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-          
