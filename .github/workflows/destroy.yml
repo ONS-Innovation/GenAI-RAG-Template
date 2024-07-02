@@ -38,11 +38,9 @@ jobs:
     - name: Read Outputs from File
       id: read_outputs
       run: |
-        source terraform_outputs.txt
-        echo "::set-env name=RETRIEVAL_SERVICE::${RETRIEVAL_SERVICE}"
-        echo "::set-env name=FRONTEND_SERVICE::${FRONTEND_SERVICE}"
-        echo "::set-env name=DATABASE::${DATABASE}"
-        echo "::set-env name=CLOUD_SQL_PASSWORD::${CLOUD_SQL_PASSWORD}"
+        while IFS='=' read -r key value; do
+          echo "$key=$value" >> $GITHUB_ENV
+        done < terraform_outputs.txt
 
     - name: Terraform Init
       run: terraform init
