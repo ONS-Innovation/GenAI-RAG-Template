@@ -39,7 +39,9 @@ jobs:
       id: read_outputs
       run: |
         while IFS='=' read -r key value; do
-          echo "$key=$value" >> $GITHUB_ENV
+          if [ -n "$key" ] && [ -n "$value" ]; then
+            echo "$key=$value" >> $GITHUB_ENV
+          fi
         done < terraform_outputs.txt
 
     - name: Terraform Init
