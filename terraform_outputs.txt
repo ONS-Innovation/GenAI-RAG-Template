@@ -1,44 +1,4 @@
-RETRIEVAL_SERVICE=[command]/home/runner/work/_temp/8095cb5d-9040-4b16-98b0-980d0dcf084f/terraform-bin output -raw retrieval_service
-retrieval-service-385f5a0d::debug::Terraform exited with code 0.
-::debug::stdout: retrieval-service-385f5a0d
-::debug::stderr: 
-::debug::exitcode: 0
-
-::set-output name=stdout::retrieval-service-385f5a0d
-
-::set-output name=stderr::
-
-::set-output name=exitcode::0
-FRONTEND_SERVICE=[command]/home/runner/work/_temp/8095cb5d-9040-4b16-98b0-980d0dcf084f/terraform-bin output -raw frontend_service
-frontend-service-385f5a0d::debug::Terraform exited with code 0.
-::debug::stdout: frontend-service-385f5a0d
-::debug::stderr: 
-::debug::exitcode: 0
-
-::set-output name=stdout::frontend-service-385f5a0d
-
-::set-output name=stderr::
-
-::set-output name=exitcode::0
-DATABASE=[command]/home/runner/work/_temp/8095cb5d-9040-4b16-98b0-980d0dcf084f/terraform-bin output -raw Database
-genai-rag-db-385f5a0d::debug::Terraform exited with code 0.
-::debug::stdout: genai-rag-db-385f5a0d
-::debug::stderr: 
-::debug::exitcode: 0
-
-::set-output name=stdout::genai-rag-db-385f5a0d
-
-::set-output name=stderr::
-
-::set-output name=exitcode::0
-CLOUD_SQL_PASSWORD=[command]/home/runner/work/_temp/8095cb5d-9040-4b16-98b0-980d0dcf084f/terraform-bin output -raw Cloud_SQL_Password
-genai-cloud-sql-password-385f5a0d::debug::Terraform exited with code 0.
-::debug::stdout: genai-cloud-sql-password-385f5a0d
-::debug::stderr: 
-::debug::exitcode: 0
-
-::set-output name=stdout::genai-cloud-sql-password-385f5a0d
-
-::set-output name=stderr::
-
-::set-output name=exitcode::0
+RETRIEVAL_SERVICE=retrieval-service-385f5a0d
+FRONTEND_SERVICE=frontend-service-385f5a0d
+DATABASE=genai-rag-db-385f5a0d
+CLOUD_SQL_PASSWORD=genai-cloud-sql-password-385f5a0d
