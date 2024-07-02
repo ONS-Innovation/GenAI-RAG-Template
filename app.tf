@@ -179,7 +179,7 @@ data "http" "database_init" {
 
 terraform {
   backend "gcs" {
-    bucket  = "terraform-gemini-bucket-${random_id.id.hex}"
+    bucket  = "google_storage_bucket.gemini-bucket.name"
     prefix  = "terraform/state"
   }
 }
