@@ -42,17 +42,13 @@ jobs:
       run: terraform -chdir=bucket_set_up apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-
-    - name: Capture Bucket Name
-      id: get_bucket_name
-      run: echo "BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)" >> $GITHUB_ENV
-
+        
     - name: Configure Backend
       run: |
         cat <<EOF > backend.tf
         terraform {
           backend "gcs" {
-            bucket = "${{ env.BUCKET_NAME }}"
+            bucket = "(terraform -chdir=bucket_set_up output -raw bucket_name)" 
             prefix = "terraform/state"
           }
         }
