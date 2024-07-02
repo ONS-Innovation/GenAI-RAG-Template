@@ -1,4 +1,26 @@
-// create_bucket.tf
+terraform {
+  required_providers {
+    google = {
+      source = "hashicorp/google"
+      version = ">= 3.0"
+    }
+    random = {
+      source = "hashicorp/random"
+      version = ">= 2.0"
+    }
+  }
+}
+
+provider "google" {
+  project = var.project_id
+  region  = "europe-west2"
+}
+
+variable "project_id" {
+  description = "The project ID to deploy to"
+  type        = string
+}
+
 resource "random_id" "id" {
   byte_length = 4
 }
