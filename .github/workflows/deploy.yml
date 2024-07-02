@@ -46,16 +46,9 @@ jobs:
       
     - name: Store Outputs to file
       run: |
-            echo BUCKET_NAME=$(terraform output -raw bucket_name)
-            cat <<EOF >backend.tf
-            terraform {
-              backend "gcs" {
-                bucket  = "$BUCKET_NAME"
-                prefix  = "terraform/state"
-                }
-                }
-                EOF
-
+            BUCKET_NAME=$(terraform output -raw bucket_name)
+            echo $BUCKET_NAME
+            
     - name: Terraform Init
       run: terraform init
             
