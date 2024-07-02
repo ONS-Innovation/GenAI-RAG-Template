@@ -16,11 +16,6 @@ provider "google" {
   region  = "europe-west2"
 }
 
-variable "project_id" {
-  description = "The project ID to deploy to"
-  type        = string
-}
-
 resource "random_id" "id" {
   byte_length = 4
 }
