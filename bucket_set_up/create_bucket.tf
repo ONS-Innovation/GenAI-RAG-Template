@@ -1,11 +1,11 @@
 terraform {
   required_providers {
     google = {
-      source = "hashicorp/google"
+      source  = "hashicorp/google"
       version = ">= 3.0"
     }
     random = {
-      source = "hashicorp/random"
+      source  = "hashicorp/random"
       version = ">= 2.0"
     }
   }
@@ -19,7 +19,6 @@ provider "google" {
 variable "project_id" {
   description = "The project ID to deploy to"
   type        = string
-  default = "hackathon-cp-project-team-1"
 }
 
 resource "random_id" "id" {
