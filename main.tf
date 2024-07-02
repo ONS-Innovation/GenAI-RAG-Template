@@ -43,7 +43,10 @@ resource "random_id" "id" {
   byte_length = 4
 }
 
-backend "gcs" {
-  bucket  = "your-gcs-bucket-name"
-  prefix  = "terraform/state"
+terraform {
+  backend "gcs" {
+    bucket  = "your-gcs-bucket-name"
+    prefix  = "terraform/state"
+  }
 }
+
