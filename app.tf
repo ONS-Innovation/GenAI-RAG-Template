@@ -14,12 +14,6 @@
  * limitations under the License.
  */
 
-resource "google_storage_bucket" "gemini-bucket" {
-  name          = "terraform-gemini-bucket-${random_id.id.hex}"
-  location      = "europe-west2"
-  force_destroy = false
-}
-
 # Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "runsa" {
   project      = module.project-services.project_id
@@ -175,11 +169,4 @@ data "http" "database_init" {
     google_cloud_run_v2_service.retrieval_service,
     data.google_service_account_id_token.oidc,
   ]
-}
-
-terraform {
-  backend "gcs" {
-    bucket  = "google_storage_bucket.gemini-bucket.name"
-    prefix  = "terraform/state"
-  }
 }
