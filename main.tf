@@ -45,7 +45,7 @@ resource "random_id" "id" {
 
 terraform {
   backend "gcs" {
-    bucket  = "terraform-bucket-gemini"
+    bucket  = "terraform-gemini-bucket-${random_id.id.hex}"
     prefix  = "terraform/state"
   }
 }

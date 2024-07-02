@@ -9,7 +9,7 @@ project_id = "hackathon-cp-project-team-1"
 
 # Google Cloud region where you want to deploy the solution.
 # Example: us-central1
-region = "us-central1"
+region = "europe-west2"
 
 # Whether or not to enable underlying apis in this solution.
 # Example: true

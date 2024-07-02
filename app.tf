@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+resource "google_storage_bucket" "gemini-bucket" {
+  name          = "terraform-gemini-bucket-${random_id.id.hex}"
+  location      = "europe-west2"
+  force_destroy = false
+}
+
+
 # Creates the Service Account to be used by Cloud Run
 resource "google_service_account" "runsa" {
   project      = module.project-services.project_id
