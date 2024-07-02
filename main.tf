@@ -42,11 +42,3 @@ module "project-services" {
 resource "random_id" "id" {
   byte_length = 4
 }
-
-terraform {
-  backend "gcs" {
-    bucket  = "terraform-bucket-gemini-${random_id.id.hex}"
-    prefix  = "terraform/state"
-  }
-}
-

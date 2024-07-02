@@ -1,4 +1,4 @@
-name: 'Terraform Apply'
+name: 'Terraform CI'
 
 on:
   push:
@@ -37,11 +37,23 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-
+    
     - name: Build Bucket
       run: terraform -chdir=bucket_set_up apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+      
+    - name: Store Outputs to file
+      run: |
+        echo BUCKET_NAME=$(terraform output -raw bucket_name)
+        cat <<EOF >backend.tf
+        terraform {
+          backend "gcs" {
+            bucket  = "$BUCKET_NAME"
+            prefix  = "terraform/state"
+          }
+        }
+        EOF
 
     - name: Terraform Apply --auto-approve
       run: terraform apply -auto-approve
