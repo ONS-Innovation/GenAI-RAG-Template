@@ -35,13 +35,19 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    - name: Terraform Init
-      run: terraform init
-  
+      
+    - name: Init Destroy Bucket
+      run: terraform -chdir=bucket_set_up init
+      env:
+        GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+
     - name: Destroy Bucket
       run: terraform -chdir=bucket_set_up destroy -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+        
+    - name: Terraform Init
+      run: terraform init
 
     - name: Terraform Destroy --auto-approve
       run: terraform destroy -auto-approve

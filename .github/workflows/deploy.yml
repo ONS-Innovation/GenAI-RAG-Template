@@ -35,9 +35,10 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    - name: Terraform Init
-      run: terraform init
-    
+      
+    - name: Init Build Bucket
+      run: terraform -chdir=bucket_set_up init
+        
     - name: Build Bucket
       run: terraform -chdir=bucket_set_up apply -auto-approve
       env:
@@ -45,18 +46,21 @@ jobs:
       
     - name: Store Outputs to file
       run: |
-        echo BUCKET_NAME=$(terraform output -raw bucket_name)
-        cat <<EOF >backend.tf
-        terraform {
-          backend "gcs" {
-            bucket  = "$BUCKET_NAME"
-            prefix  = "terraform/state"
-          }
-        }
-        EOF
+            echo BUCKET_NAME=$(terraform output -raw bucket_name)
+            cat <<EOF >backend.tf
+            terraform {
+              backend "gcs" {
+                bucket  = "$BUCKET_NAME"
+                prefix  = "terraform/state"
+                }
+                }
+                EOF
 
+    - name: Terraform Init
+      run: terraform init
+            
     - name: Terraform Apply --auto-approve
       run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
-        
+          
