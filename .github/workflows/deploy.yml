@@ -38,6 +38,11 @@ jobs:
     - name: Terraform Init
       run: terraform init
 
+    - name: Build Bucket
+      run: terraform -chdir=bucket_set_up apply -auto-approve
+      env:
+        GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+
     - name: Terraform Apply --auto-approve
       run: terraform apply -auto-approve
       env:

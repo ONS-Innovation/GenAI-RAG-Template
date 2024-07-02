@@ -170,3 +170,4 @@ data "http" "database_init" {
     data.google_service_account_id_token.oidc,
   ]
 }
+

@@ -37,6 +37,11 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
+  
+    - name: Destroy Bucket
+      run: terraform -chdir=bucket_set_up apply -auto-approve
+      env:
+        GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
 
     - name: Terraform Destroy --auto-approve
       run: terraform destroy -auto-approve
