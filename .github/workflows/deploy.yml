@@ -45,7 +45,7 @@ jobs:
         
     - name: Store Outputs to file
       run: |
-        echo "RETRIEVAL_SERVICE=$(terraform output -raw retrieval_service)" >> terraform_outputs.txt
+        echo "RETRIEVAL_SERVICE=$(terraform output -raw retrieval_service)" > terraform_outputs.txt
         echo "FRONTEND_SERVICE=$(terraform output -raw frontend_service)" >> terraform_outputs.txt
         echo "DATABASE=$(terraform output -raw Database)" >> terraform_outputs.txt
         echo "CLOUD_SQL_PASSWORD=$(terraform output -raw Cloud_SQL_Password)" >> terraform_outputs.txt
