@@ -10,8 +10,8 @@ metadata:
     - terraform
     - ""
   links: [    
-    - url: 'https://github.com/' + ${{values.destination.owner + "/" + values.destination.repo}} + '/actions/workflows/destroy.yml'
-      title: Terraform Destroy Link
+    - url: https://github.com/${{values.destination.owner + "/" + values.destination.repo}}/actions/workflows/destroy.yml
+      title: Link to terraform destory workflow
       ]
 spec:
   type: other
