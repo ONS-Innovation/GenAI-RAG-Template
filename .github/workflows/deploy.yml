@@ -38,11 +38,13 @@ jobs:
     - name: Init Build Bucket
       run: terraform -chdir=bucket_set_up init
 
+
     - name: Capture Bucket Name
       id: get_bucket_name
       run: |
-        echo "BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)" >> $GITHUB_ENV
-        echo $BUCKET_NAME  # This is to verify the captured value, optional
+        BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)
+        echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
+        echo "Captured BUCKET_NAME=$BUCKET_NAME"  # Optional: Echo to verify the captured value
 
     - name: Configure Backend
       run: |
