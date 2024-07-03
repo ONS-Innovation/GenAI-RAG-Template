@@ -2,17 +2,16 @@ apiVersion: backstage.io/v1alpha1
 kind: Component
 metadata:
   name: GenAI-RAG-Template
-  description: "Template to generate a RAG chatbot "
+  description: "Template to generate a RAG chatbot"
   annotations:
     github.com/project-slug: github.com?owner=backstage-dummy-org&repo=GenAI-RAG-Template
   tags:
     - python
     - terraform
-    - ""
   links: 
     - url: https://github.com/${{values.destination.owner + "/" + values.destination.repo}}/actions/workflows/destroy.yml
       title: Link to terraform destory workflow
-      
+      icon: docs
 spec:
   type: other
   lifecycle: experimental
