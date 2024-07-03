@@ -35,24 +35,6 @@ jobs:
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v1
 
-    - name: Init Build Bucket
-      run: terraform -chdir=bucket_set_up init
-
-
-    - name: Capture Bucket Name
-      id: get_bucket_name
-      run: |
-        BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)
-
-    - name: Configure Backend
-      run: |
-        echo "terraform {
-          backend \"gcs\" {
-            bucket = \"$BUCKET_NAME\"
-            prefix = \"terraform/state\"
-          }
-        }" > backend.tf
-
     - name: Terraform Init
       run: terraform init
 
