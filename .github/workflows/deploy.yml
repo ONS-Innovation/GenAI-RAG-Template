@@ -43,8 +43,6 @@ jobs:
       id: get_bucket_name
       run: |
         BUCKET_NAME=$(terraform -chdir=bucket_set_up output -raw bucket_name)
-        echo "BUCKET_NAME=$BUCKET_NAME" >> $GITHUB_ENV
-        echo "Captured BUCKET_NAME=$BUCKET_NAME"  # Optional: Echo to verify the captured value
 
     - name: Configure Backend
       run: |
