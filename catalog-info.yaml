@@ -1,0 +1,16 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: GenAI-RAG-Template
+  description: "Template to generate a RAG chatbot "
+  annotations:
+    github.com/project-slug: github.com?owner=backstage-dummy-org&repo=GenAI-RAG-Template
+  tags:
+    - python
+    - terraform
+    - ""
+  links: []
+spec:
+  type: other
+  lifecycle: experimental
+  owner: group:default/spp-sml
