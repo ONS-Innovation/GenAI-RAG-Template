@@ -52,6 +52,9 @@ jobs:
       run: |
             sed -i '/links:/a \ \ - url: '"${deployment_ip_address}"'\n \ \ \ title: Chatbot Link\n \ \ \ icon: chat' catalog-info.yaml
 
+    - name: echo deployment_ip_address
+      run: echo ${deployment_ip_address}  
+
     - name: Commit and Push Changes
       run: |
         git config --global user.email "wojciech.przybylski@ext.ons.gov.uk"
