@@ -4,7 +4,7 @@ metadata:
   name: GenAI-RAG-Template
   description: "Template to generate a RAG chatbot"
   annotations:
-    github.com/project-slug: github.com?owner=backstage-dummy-org&repo=GenAI-RAG-Template
+    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
   tags:
     - python
     - terraform
