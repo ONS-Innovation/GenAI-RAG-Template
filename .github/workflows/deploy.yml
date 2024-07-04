@@ -37,20 +37,24 @@ jobs:
 
     - name: Terraform Init
       run: terraform init
-
+      
     - name: Terraform Apply 
       id: apply
-      run: terraform apply -auto-approve
+      run: |
+          terraform apply -auto-approve
+          deployment_ip_address=$(terraform output -raw deployment_ip_address | awk '{$1=$1};1' | awk 'NF' | sed 's/ *= */=/')
+          last_line=$(echo "$deployment_ip_address" | tail -n 6 | head -n 1 | sed 's/::debug::stdout: //')
+          echo "${last_line}" 
+          deployment_ip_address=$last_line
+          echo "deployment_ip_address=${deployment_ip_address}" >> $GITHUB_ENV
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
 
-    - name: Capture Terraform Output
-      id: output
-      run: terraform output | awk '{$1=$1};1' | awk 'NF' | sed 's/ *= */=/'     
-
     - name: Update catalog-info.yaml
       run: |
-            sed -i '/links:/a \ \ - url: '"${deployment_ip_address}"'\n \ \ \ title: Chatbot Link\n \ \ \ icon: chat' catalog-info.yaml
+        deployment_ip_address="${{ env.deployment_ip_address }}"
+        sed -i '/links:/a \ \ \ \ - url: '"$deployment_ip_address"'\n \ \ \ \ \ title: Chatbot Link\n \ \ \ \ \ icon: chat' catalog-info.yaml
+
 
     - name: Commit and Push Changes
       run: |
