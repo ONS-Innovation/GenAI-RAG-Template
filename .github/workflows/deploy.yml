@@ -39,6 +39,23 @@ jobs:
       run: terraform init
 
     - name: Terraform Apply 
+      id: apply
       run: terraform apply -auto-approve
       env:
         GOOGLE_CLOUD_PROJECT: hackathon-cp-project-team-1
+
+    - name: Capture Terraform Output
+      id: output
+      run: terraform output | awk '{$1=$1};1' | awk 'NF' | sed 's/ *= */=/'     
+
+    - name: Update catalog-info.yaml
+      run: |
+            sed -i '/links:/a \ \ - url: '"${deployment_ip_address}"'\n \ \ \ title: Chatbot Link\n \ \ \ icon: chat' catalog-info.yaml
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.email "wojciech.przybylski@ext.ons.gov.uk"
+        git config --global user.name "WojciechP-ONS"
+        git add catalog-info.yaml
+        git commit -m "Add deployment IP address to catalog-info.yaml"
+        git push
