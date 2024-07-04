@@ -9,7 +9,7 @@ metadata:
     - python
     - terraform
   links: 
-    - url: https://github.com/${{values.destination.owner + "/" + values.destination.repo}}/actions/workflows/destroy.yml
+    - url: https://github.com/${{ parameters.repoUrl | parseRepoUrl }}/actions/workflows/destroy.yml
       title: Link to terraform destory workflow
       icon: docs
 spec:
