@@ -4,12 +4,12 @@ metadata:
   name: GenAI-RAG-Template
   description: "Template to generate a RAG chatbot"
   annotations:
-    github.com/project-slug: ${{values.destination.owner + "/" + values.destination.repo}}
+    github.com/project-slug: github.com?owner=backstage-dummy-org&repo=GenAI-RAG-Template
   tags:
     - python
     - terraform
   links: 
-    - url: https://github.com/${{ parameters.repoUrl | parseRepoUrl }}/actions/workflows/destroy.yml
+    - url: https://github.com/${{values.destination.owner + "/" + values.destination.repo}}/actions/workflows/destroy.yml
       title: Link to terraform destory workflow
       icon: docs
 spec:
