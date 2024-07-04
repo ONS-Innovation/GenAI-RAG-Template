@@ -10,10 +10,10 @@ metadata:
     - terraform
   links:
     - url: "https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}/actions/workflows/deploy.yml"
-      title: Link to terraform deployment workflow
+      title: Terraform deployment workflow
       icon: github
     - url: "https://github.com/${{ values.destination.owner }}/${{ values.destination.repo }}/actions/workflows/destroy.yml"
-      title: Link to terraform destroy workflow
+      title: Terraform destroy workflow
       icon: github
 spec:
   type: other
