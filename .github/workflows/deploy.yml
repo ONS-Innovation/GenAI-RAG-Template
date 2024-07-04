@@ -52,12 +52,8 @@ jobs:
 
     - name: Update catalog-info.yaml
       run: |
-        deployment_ip_address="${{ env.deployment_ip_address }}"
+        deployment_ip_address="${deployment_ip_address}"
         sed -i '/links:/a \ \ \ \ - url: '"$deployment_ip_address"'\n \ \ \ \ \ title: Chatbot Link\n \ \ \ \ \ icon: chat' catalog-info.yaml
-
-
-    - name: echo deployment_ip_address
-      run: echo ${deployment_ip_address}  
 
     - name: Commit and Push Changes
       run: |
